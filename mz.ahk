@@ -32,7 +32,7 @@ scriptDir := A_ScriptDir
 scriptName := A_ScriptName
 
 ; Локальная версия
-currentVersion := "0.5.5"  ; Укажите текущую версию скрипта
+currentVersion := "0.5.6"  ; Укажите текущую версию скрипта
 
 ; Ссылки на GitHub
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
@@ -136,8 +136,11 @@ if !EnsureFolderExists()
     ExitApp  ; Завершаем скрипт, если папку не удалось создать
 }
 
-
-
+  If Not FileExist("C:\Windows\Fonts\Gilroy-Medium.ttf") ; Замените на точное имя файла шрифта
+  {
+    MsgBox, Шрифт "Gilory" не найден! Пожалуйста, установите нужные шрифты, согласно гайду.
+ExitApp
+}
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -157,7 +160,7 @@ Gui, Add, Text, x2 x20 y110 w100 h15 cWhite, • медкарта1
 Gui, Add, Text, x2 x85 y110 w120 h15 cFD7B7C, — выдача мед. карты
 Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v 0.5.5
+Gui, Add, Text, x10 y585 w111 h30 , v 0.5.6
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x237 y40 w455 h138 cFD7B7C, [ вызов ]
@@ -445,7 +448,7 @@ Gui, Add, Text, x2 x360 y430 w222 h15 cFD7B7C, — вступительная
 
 Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v 0.5.5
+Gui, Add, Text, x10 y585 w111 h30 , v 0.5.6
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -628,7 +631,7 @@ Gui 1:Add, GroupBox, x348 y448 w307 h112 cFD7B7C
 
 Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v 0.5.5
+Gui, Add, Text, x10 y585 w111 h30 , v 0.5.6
 
 ;-------------------------------- техничка -----------------------------------
 
