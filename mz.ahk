@@ -1,5 +1,5 @@
 #SingleInstance Force
-#IfWinActive MTA
+
 CheckUIA()
 {
     if (!A_IsCompiled && !InStr(A_AhkPath, "_UIA")) {
@@ -32,7 +32,7 @@ scriptDir := A_ScriptDir
 scriptName := A_ScriptName
 
 ; Локальная версия
-currentVersion := "0.5.2"  ; Укажите текущую версию скрипта
+currentVersion := "0.5.3"  ; Укажите текущую версию скрипта
 
 ; Ссылки на GitHub
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
@@ -143,67 +143,177 @@ if !EnsureFolderExists()
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, Tab2, x10 y5 h40 w600 Buttons -Wrap, main|лекции|доклады|settings
-Gui 1:Add, GroupBox, x10 y40 w292 h90 cFD7B7C, [ общие ]
+
+Gui 1:Add, GroupBox, x10 y40 w225 h90 cFD7B7C, [ общие ]
 Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x2 x20 y65 w222 h15 cWhite, • смена1
-Gui, Add, Text, x2 x67 y65 w222 h15 cFD7B7C, — fracvoice 2 + доклады
-Gui, Add, Text, x2 x20 y80 w222 h15 cWhite, • смена2
+Gui, Add, Text, x2 x20 y65 w111 h15 cWhite, • смена1
+Gui, Add, Text, x2 x67 y65 w150 h15 cFD7B7C, — fracvoice 2 + доклады
+Gui, Add, Text, x2 x20 y80 w150 h15 cWhite, • смена2
 Gui, Add, Text, x2 x67 y80 w150 h15 cFD7B7C, — доклад о сдаче смены
-Gui, Add, Text, x2 x20 y95 w200 h15 cWhite, • рация1
-Gui, Add, Text, x2 x68 y95 w215 h15 cFD7B7C, — отыгровки + заготовка (тег)
+Gui, Add, Text, x2 x20 y95 w150 h15 cWhite, • рация1
+Gui, Add, Text, x2 x68 y95 w150 h15 cFD7B7C, — отыгровки + заготовка (тег)
 ;
-Gui, Add, Text, x2 x20 y110 w200 h15 cWhite, • медкарта1
-Gui, Add, Text, x2 x85 y110 w215 h15 cFD7B7C, — выдача мед. карты
+Gui, Add, Text, x2 x20 y110 w100 h15 cWhite, • медкарта1
+Gui, Add, Text, x2 x85 y110 w120 h15 cFD7B7C, — выдача мед. карты
 Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v 0.5.1
+Gui, Add, Text, x10 y585 w111 h30 , v 0.5.3
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
-Gui 1:Add, GroupBox, x307 y40 w350 h144 cFD7B7C, [ вызов ]
+Gui 1:Add, GroupBox, x237 y40 w455 h138 cFD7B7C, [ вызов ]
 Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x2 x317 y65 w222 h15 cFD7B7C, • в1
-Gui, Add, Text, x2 x339 y65 w300 h15 cWhite, — доклад о принятии | прибытии | госпитализации
-Gui, Add, Text, x2 x317 y80 w222 h15 cwhite, | отмене | ложном вызове ( СОЛО )
-Gui, Add, Text, x2 x317 y95 w222 h15 cFD7B7C, • вн1
-Gui, Add, Text, x2 x345 y95 w300 h15 cWhite, — доклад о принятии | прибытии | госпитализации
-Gui, Add, Text, x2 x317 y110 w300 h15 cWhite, | отмене | ложном вызове ( С НАПАРНИКОМ )
-Gui, Add, Text, x2 x317 y125 w210 h15 cFD7B7C, • созн1
-Gui, Add, Text, x2 x356 y125 w210 h15 cWhite, — приведение в сознание пациента
-Gui, Add, Text, x2 x317 y140 w210 h15 cFD7B7C, • ctrl + 1
-Gui, Add, Text, x2 x362 y140 w288 h15 cWhite, — каталка (Right Control для продолжения)
-Gui, Add, Text, x2 x317 y155 w210 h15 cFD7B7C, • ctrl + 2
-Gui, Add, Text, x2 x362 y155 w288 h15 cWhite, — госпитализация
+Gui, Add, Text, x247 y65 w222 h15 cFD7B7C, • в1
+Gui, Add, Text, x269 y65 w300 h15 cWhite, — доклад о принятии | прибытии | госпитализации
+Gui, Add, Text, x247 y80 w222 h15 cwhite, | отмене | ложном вызове ( СОЛО )
+Gui, Add, Text, x247 y95 w222 h15 cFD7B7C, • вн1
+Gui, Add, Text, x275 y95 w300 h15 cWhite, — доклад о принятии | прибытии | госпитализации
+Gui, Add, Text, x247 y110 w300 h15 cWhite, | отмене | ложном вызове ( С НАПАРНИКОМ )
+Gui, Add, Text, x247 y125 w210 h15 cFD7B7C, • созн1
+Gui, Add, Text, x286 y125 w210 h15 cWhite, — приведение в сознание пациента
+Gui, Add, Text, x247 y140 w210 h15 cFD7B7C, • ctrl + 1
+Gui, Add, Text, x292 y140 w288 h15 cWhite, — каталка (Right Control для продолжения)
+Gui, Add, Text, x247 y155 w210 h15 cFD7B7C, • ctrl + 2
+Gui, Add, Text, x292 y155 w288 h15 cWhite, — госпитализация
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
-Gui 1:Add, GroupBox, x10 y125 w292 h415 cFD7B7C, [ лекарства ]
+Gui 1:Add, GroupBox, x10 y125 w225 h415 cFD7B7C, [ лекарства ]
 Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x2 x20 y150 w222 h15 cWhite, • живот1
-Gui, Add, Text, x2 x20 y165 w222 h15 cWhite, • тошнота1
-Gui, Add, Text, x2 x20 y180 w222 h15 cWhite, • отравление1
-Gui, Add, Text, x2 x20 y195 w222 h15 cWhite, • ушиб1
-Gui, Add, Text, x2 x20 y210 w222 h15 cWhite, • обезбол1
-Gui, Add, Text, x2 x20 y225 w222 h15 cWhite, • запор1
-Gui, Add, Text, x2 x20 y240 w222 h15 cWhite, • понос1
-Gui, Add, Text, x2 x20 y255 w222 h15 cWhite, • геморрой1
-Gui, Add, Text, x2 x20 y270 w222 h15 cWhite, • суставы1
-Gui, Add, Text, x2 x20 y285 w222 h15 cWhite, • судороги1
-Gui, Add, Text, x2 x20 y300 w222 h15 cWhite, • витамины1
-Gui, Add, Text, x2 x20 y315 w222 h15 cWhite, • аллергия1
-Gui, Add, Text, x2 x20 y330 w222 h15 cWhite, • простуда1
-Gui, Add, Text, x2 x20 y345 w222 h15 cWhite, • насморк1
-Gui, Add, Text, x2 x20 y360 w222 h15 cWhite, • бессоница1
-Gui, Add, Text, x2 x20 y375 w222 h15 cWhite, • печень1
-Gui, Add, Text, x2 x20 y390 w222 h15 cWhite, • половые1
-Gui, Add, Text, x2 x20 y405 w222 h15 cWhite, • сердце1
-Gui, Add, Text, x2 x20 y420 w222 h15 cWhite, • зубы1
-Gui, Add, Text, x2 x20 y435 w222 h15 cWhite, • глаза1
-Gui, Add, Text, x2 x20 y450 w222 h15 cWhite, • ожог1
-Gui, Add, Text, x2 x20 y465 w222 h15 cWhite, • уши1
-Gui, Add, Text, x2 x20 y480 w222 h15 cWhite, • почки1
-Gui, Add, Text, x2 x20 y495 w222 h15 cWhite, • давление1
-Gui, Add, Text, x2 x20 y510 w222 h15 cWhite, • мочевой1
+Gui, Add, Text, x2 x20 y150 w150 h15 cWhite, • живот1
+Gui, Add, Text, x2 x20 y165 w150 h15 cWhite, • тошнота1
+Gui, Add, Text, x2 x20 y180 w150 h15 cWhite, • отравление1
+Gui, Add, Text, x2 x20 y195 w150 h15 cWhite, • ушиб1
+Gui, Add, Text, x2 x20 y210 w150 h15 cWhite, • обезбол1
+Gui, Add, Text, x2 x20 y225 w150 h15 cWhite, • запор1
+Gui, Add, Text, x2 x20 y240 w150 h15 cWhite, • понос1
+Gui, Add, Text, x2 x20 y255 w150 h15 cWhite, • геморрой1
+Gui, Add, Text, x2 x20 y270 w150 h15 cWhite, • суставы1
+Gui, Add, Text, x2 x20 y285 w150 h15 cWhite, • судороги1
+Gui, Add, Text, x2 x20 y300 w150 h15 cWhite, • витамины1
+Gui, Add, Text, x2 x20 y315 w150 h15 cWhite, • аллергия1
+Gui, Add, Text, x2 x20 y330 w150 h15 cWhite, • простуда1
+Gui, Add, Text, x2 x20 y345 w150 h15 cWhite, • насморк1
+Gui, Add, Text, x2 x20 y360 w150 h15 cWhite, • бессоница1
+Gui, Add, Text, x2 x20 y375 w150 h15 cWhite, • печень1
+Gui, Add, Text, x2 x20 y390 w150 h15 cWhite, • половые1
+Gui, Add, Text, x2 x20 y405 w150 h15 cWhite, • сердце1
+Gui, Add, Text, x2 x20 y420 w150 h15 cWhite, • зубы1
+Gui, Add, Text, x2 x20 y435 w150 h15 cWhite, • глаза1
+Gui, Add, Text, x2 x20 y450 w150 h15 cWhite, • ожог1
+Gui, Add, Text, x2 x20 y465 w150 h15 cWhite, • уши1
+Gui, Add, Text, x2 x20 y480 w150 h15 cWhite, • почки1
+Gui, Add, Text, x2 x20 y495 w150 h15 cWhite, • давление1
+Gui, Add, Text, x2 x20 y510 w150 h15 cWhite, • мочевой1
 
-;-------------------------------- лекции гуи -----------------------------------
+; ---------------------------------------------------------
+
+Gui 1:Font, s12 White Bold, Gilory
+Gui, Add, Text, x350 y190 w240 h30 cWhite, [ структура управления ОКБ ]
+
+Gui 1:Add, GroupBox, x395 y215 w135 h55
+Gui 1:Font, s8 White Bold, Gilory
+Gui, Add, Text, x427 y232 w99 h15 cWhite, главный врач
+Gui 1:Font, s9 White Bold, Gilory
+Gui, Add, Text, x421 y247 w100 h20 cFD7B7C, Renat_McKenzy
+
+Gui 1:Font, s8 White Bold, Gilory
+Gui, Add, Text, x389 y270 w11 h15 cWhite, /
+Gui, Add, Text, x384 y282 w11 h15 cWhite, /
+Gui, Add, Text, x530 y270 w11 h15 cWhite, \
+Gui, Add, Text, x535 y282 w11 h15 cWhite, \
+Gui, Add, Text, x463 y270 w11 h15 cWhite, |
+Gui, Add, Text, x463 y282 w11 h15 cWhite, |
+
+Gui 1:Add, GroupBox, x300 y290 w100 h45
+Gui 1:Add, GroupBox, x415 y290 w100 h45
+Gui 1:Add, GroupBox, x530 y290 w100 h45
+
+Gui 1:Font, s7 White Bold, Gilory
+Gui, Add, Text, x320 y303 w70 h15 cWhite, заместитель гв
+Gui, Add, Text, x435 y303 w70 h15 cWhite, заместитель гв
+Gui, Add, Text, x550 y303 w70 h15 cWhite, заместитель гв
+Gui 1:Font, s8 White Bold, Gilory
+Gui, Add, Text, x318 y314 w70 h19 cFD7B7C, Lev_McKenzy
+Gui, Add, Text, x419 y314 w94 h19 cFD7B7C, German_McKenzy
+Gui, Add, Text, x534 y314 w94 h19 cFD7B7C, Evgeniy_Jefferson
+
+Gui, Add, GroupBox, x282 y364 w368 h7
+
+Gui, Add, Text, x295 y335 w11 h15 cwhite, /
+Gui, Add, Text, x290 y346 w11 h15 cwhite, /
+Gui, Add, Text, x286 y354 w11 h15 cwhite, /
+
+Gui, Add, Text, x630 y334 w11 h15 cwhite, \
+Gui, Add, Text, x635 y345 w11 h15 cwhite, \
+Gui, Add, Text, x638 y352 w11 h15 cwhite, \
+
+Gui, Add, Text, x463 y335 w11 h15 cwhite, |
+Gui, Add, Text, x463 y345 w11 h15 cwhite, |
+Gui, Add, Text, x463 y352 w11 h15 cwhite, |
+
+Gui, Add, Text, x275 y375 w11 h15 cwhite, /
+Gui 1:Add, GroupBox, x240 y397 w90 h40
+
+Gui, Add, Text, x400 y375 w11 h15 cwhite, /
+Gui 1:Add, GroupBox, x358 y385 w90 h40
+
+Gui, Add, Text, x535 y375 w11 h15 cwhite, \
+Gui 1:Add, GroupBox, x495 y385 w90 h40
+
+Gui, Add, Text, x648 y376 w11 h15 cwhite, \
+Gui 1:Add, GroupBox, x607 y397 w90 h40
+
+Gui, Add, Text, x275 y385 w11 h15 cwhite, |
+Gui, Add, Text, x652 y387 w11 h15 cwhite, |
+
+Gui 1: Font, s11 cWhite Bold, Gilroy
+Gui, Add, Text, x264 y412 w60 h15 cFD7B7C, ОРИТ
+Gui, Add, Text, x378 y400 w60 h15 cFD7B7C, ОСМП
+Gui, Add, Text, x517 y400 w60 h20 cFD7B7C, ЦЭМП
+Gui, Add, Text, x640 y412 w40 h20 cFD7B7C, МА
+
+Gui, Add, Text, x283 y437 w60 h20 cwhite, |
+Gui, Add, Text, x397 y425 w60 h20 cwhite, |
+Gui, Add, Text, x539 y425 w60 h20 cwhite, |
+Gui, Add, Text, x650 y437 w60 h20 cwhite, |
+
+Gui 1:Add, GroupBox, x240 y450 w90 h40
+Gui 1:Add, GroupBox, x358 y438 w90 h40
+Gui 1:Add, GroupBox, x495 y438 w90 h40
+Gui 1:Add, GroupBox, x607 y450 w90 h40
+
+Gui, Add, Text, x283 y490 w60 h20 cwhite, |
+Gui, Add, Text, x397 y478 w60 h20 cwhite, |
+Gui, Add, Text, x539 y478 w60 h20 cwhite, |
+Gui, Add, Text, x650 y490 w60 h20 cwhite, |
+
+Gui 1:Add, GroupBox, x240 y502 w90 h40
+Gui 1:Add, GroupBox, x358 y490 w90 h40
+Gui 1:Add, GroupBox, x495 y490 w90 h40
+Gui 1:Add, GroupBox, x607 y502 w90 h40
+
+Gui 1:Font, s7 White Bold, Gilory
+Gui, Add, Text, x257 y515 w70 h15 cWhite, зам.зав.орит
+Gui, Add, Text, x373 y503 w70 h15 cWhite, зам.зав.осмп
+Gui, Add, Text, x512 y503 w70 h15 cWhite, зам.зав.цэмп
+Gui, Add, Text, x628 y515 w65 h15 cWhite, зам.зав.ма
+Gui 1:Font, s7 White Bold, Gilory
+Gui, Add, Text, x250 y525 w77 h11 cFD7B7C, Gabriel_McKenzy
+Gui, Add, Text, x368 y513 w77 h11 cFD7B7C, Yaroslav_Norkoff
+Gui, Add, Text, x516 y513 w65 h11 cFD7B7C, *вакантно*
+Gui, Add, Text, x620 y525 w69 h11 cFD7B7C, Landon_Lacosta
+
+Gui 1:Font, s7 White Bold, Gilory
+Gui, Add, Text, x268 y462 w60 h15 cWhite, зав.орит
+Gui, Add, Text, x381 y450 w60 h15 cWhite, зав.осмп
+Gui, Add, Text, x520 y450 w60 h15 cWhite, зав.цэмп
+Gui, Add, Text, x636 y462 w60 h15 cWhite, зав.ма
+Gui 1:Font, s7 White Bold, Gilory
+Gui, Add, Text, x260 y472 w60 h11 cFD7B7C, Kira_Alaska
+Gui, Add, Text, x368 y460 w77 h11 cFD7B7C, Timur_Moscovtsev
+Gui, Add, Text, x516 y460 w65 h11 cFD7B7C, Frank_Devin
+Gui, Add, Text, x620 y472 w69 h11 cFD7B7C, Felix_Jefferson
+
+;________________________________________________________________________________________________________________________________________________________________________________________
 
 Gui, 1:Tab, 2
 Gui 1: Font, s12 cWhite Bold, Gilroy
@@ -326,11 +436,18 @@ Gui, Add, Text, x2 x360 y365 w215 h15 cFD7B7C, — катаракта
 Gui, Add, Text, x2 x315 y380 w185 h15 cWhite, • лекосткров
 Gui, Add, Text, x2 x387 y380 w185 h15 cFD7B7C, — остановка крови
 
+Gui, 1:Tab, 2
+Gui 1: Font, s12 cWhite Bold, Gilroy
+Gui 1:Add, GroupBox, x305 y405 w292 h50 cFD7B7C, [ other ]
+Gui 1:Font, s8 White Bold, Gilory
+Gui, Add, Text, x2 x315 y430 w222 h15 cWhite, • леквст
+Gui, Add, Text, x2 x360 y430 w222 h15 cFD7B7C, — вступительная
+
 Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v 0.5.1
+Gui, Add, Text, x10 y585 w111 h30 , v 0.5.3
 
-;-------------------------------- доклады -----------------------------------
+;________________________________________________________________________________________________________________________________________________________________________________________
 
 Gui, 1:Tab, 3
 Gui 1: Font, s12 cWhite Bold, Gilroy
@@ -343,11 +460,9 @@ Gui, Add, Text, x2 x52 y80 w150 h15 cwhite, — патруль респ. [ ка�
 Gui, Add, Text, x2 x20 y95 w200 h15 cFD7B7C, • прв1
 Gui, Add, Text, x2 x52 y95 w215 h15 cwhite, — патруль респ. [ вертолет ]
 Gui, Add, Text, x2 x18 y135 w305 h15 cwhite, [ для дальнейших команд применяется следующий ввод ]
-Gui, Add, Text, x2 x35 y153 w270 h15 cFD7B7C,  1) выезд                      3) продолжение
-Gui, Add, Text, x2 x35 y167 w187 h15 cFD7B7C, 2) прибытие               4) завершение
-Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x2 x235 y162 w100 h15 cwhite, [ ввод в settings ]
-Gui 1:Font, s8 White Bold, Gilory
+Gui, Add, Text, x2 x35 y153 w270 h15 cFD7B7C, 1) выезд               3) продолжение
+Gui, Add, Text, x2 x35 y167 w187 h15 cFD7B7C, 2) прибытие        4) завершение
+Gui, Add, Text, x2 x225 y162 w100 h15 cwhite, [ ввод в settings ]
 Gui 1:Add, GroupBox, x10 y115 w320 h170
 Gui, Add, Text, x2 x20 y200 w200 h15 cFD7B7C, • пост1
 Gui, Add, Text, x2 x59 y200 w215 h15 cwhite, — дежурство на посту КСМП
@@ -374,9 +489,7 @@ Gui, Add, Text, x385 y95 w215 h15 cwhite, — патруль респ. [ вер�
 Gui, Add, Text, x343 y135 w305 h15 cwhite, [ для дальнейших команд применяется следующий ввод ]
 Gui, Add, Text, x360 y153 w270 h15 cFD7B7C, 1) выезд               3) продолжение
 Gui, Add, Text, x360 y167 w187 h15 cFD7B7C, 2) прибытие        4) завершение
-Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x560 y162 w100 h15 cwhite, [ ввод в settings ]
-Gui 1:Font, s8 White Bold, Gilory
+Gui, Add, Text, x550 y162 w100 h15 cwhite, [ ввод в settings ]
 Gui 1:Add, GroupBox, x335 y115 w320 h170
 Gui, Add, Text, x345 y200 w200 h15 cFD7B7C, • постн1
 Gui, Add, Text, x389 y200 w215 h15 cwhite, — дежурство на посту КСМП
@@ -515,7 +628,7 @@ Gui 1:Add, GroupBox, x348 y448 w307 h112 cFD7B7C
 
 Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v 0.5.1
+Gui, Add, Text, x10 y585 w111 h30 , v 0.5.3
 
 ;-------------------------------- техничка -----------------------------------
 
@@ -731,11 +844,11 @@ run, https://imgur.com/a/K47530O
 return
 
 link18:
-run, https://imgur.com/a/NuBT1GJ
+run, https://imgur.com/a/UNmEmAT
 return
 
 link19:
-run, https://imgur.com/a/NuBT1GJ
+run, https://imgur.com/a/WSj6VB0
 return
 
 link1v:
