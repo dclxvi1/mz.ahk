@@ -1,4 +1,4 @@
-﻿#SingleInstance Force
+#SingleInstance Force
 #IfWinActive MTA
 CheckUIA()
 {
@@ -14,11 +14,132 @@ if !A_IsUnicode
     ExitApp
 }
 
+if not A_IsAdmin
+{
+    Run *RunAs "%A_ScriptFullPath%"  
+    ExitApp 
+}
+
 global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , Gender :=""
 CheckUIA()
 Gui, Color, 202127 ; колор фона
 Gui, Show, center w700 h600, mz by mck
-; ------------------------------- gui -------------------------------
+;________________________________________________________________________________________________________________________________________________________________________________________
+
+; Путь к текущему скрипту
+scriptPath := A_ScriptFullPath
+scriptDir := A_ScriptDir
+scriptName := A_ScriptName
+
+; Локальная версия
+currentVersion := "0.5.2"  ; Укажите текущую версию скрипта
+
+; Ссылки на GitHub
+githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
+githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
+
+; Функция для проверки обновлений
+CheckForUpdates() {
+    global currentVersion, githubVersionURL, githubScriptURL, scriptPath, scriptDir, scriptName
+
+    ; Загружаем версию с GitHub
+    whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+    whr.Open("GET", githubVersionURL, true)
+    whr.Send()
+    whr.WaitForResponse()
+
+    ; Проверяем статус ответа
+    status := whr.Status
+    if (status != 200) {
+        MsgBox, 16, Ошибка, Не удалось получить версию с сервера. Код статуса: %status%
+        return
+    }
+
+    ; Убираем все лишние символы (пробелы, переносы строк и т.д.)
+    serverVersion := Trim(whr.ResponseText)
+    serverVersion := RegExReplace(serverVersion, "[\r\n]+", "")  ; Удаляем переносы строк
+    serverVersion := RegExReplace(serverVersion, "\s+", "")     ; Удаляем все пробелы
+
+    ; Убираем лишние символы из локальной версии
+    currentVersion := Trim(currentVersion)
+    currentVersion := RegExReplace(currentVersion, "[\r\n]+", "")
+    currentVersion := RegExReplace(currentVersion, "\s+", "")
+
+    ; Сравниваем версии
+    if (serverVersion != currentVersion) {
+        MsgBox, 4, Обновление, Доступна новая версия (%serverVersion%). Хотите обновить?
+        IfMsgBox, No
+            return
+
+        ; Загружаем новый скрипт
+        whr.Open("GET", githubScriptURL, true)
+        whr.Send()
+        whr.WaitForResponse()
+
+        ; Проверяем статус ответа
+        status := whr.Status
+        if (status != 200) {
+            MsgBox, 16, Ошибка, Не удалось загрузить новый скрипт. Код статуса: %status%
+            return
+        }
+
+        newScript := whr.ResponseText
+
+        ; Переименовываем старый скрипт
+        oldScriptPath := scriptDir "\" RegExReplace(scriptName, "\.ahk$", "") " (old).ahk"
+        FileMove, %scriptPath%, %oldScriptPath%
+
+        ; Сохраняем новый скрипт
+        FileAppend, %newScript%, %scriptPath%
+
+        ; Обновляем текущую версию
+        currentVersion := serverVersion
+
+        MsgBox, 64, Успех, Скрипт успешно обновлен. Перезапустите скрипт.
+        ExitApp  ; Завершаем текущий скрипт
+    }
+}
+
+; Проверка обновлений при запуске
+CheckForUpdates()
+
+;________________________________________________________________________________________________________________________________________________________________________________________
+
+; Путь к папке в Program Files
+folderPath := "C:\Program Files\mz.ahk"
+iniFile := folderPath "\settings.ini"
+
+; Функция для проверки и создания папки, если её нет
+EnsureFolderExists() {
+    global folderPath
+    if !FileExist(folderPath)
+    {
+        ; Пытаемся создать папку
+        FileCreateDir, %folderPath%
+        if ErrorLevel
+        {
+            MsgBox, 16, Ошибка, Не удалось создать папку: %folderPath%
+            return false
+        }
+        else
+        {
+            MsgBox, 64, Успех, Папка успешно создана: %folderPath%
+            return true
+        }
+    }
+    return true
+}
+
+; Проверяем и создаем папку при запуске
+if !EnsureFolderExists()
+{
+    ExitApp  ; Завершаем скрипт, если папку не удалось создать
+}
+
+
+
+
+;________________________________________________________________________________________________________________________________________________________________________________________
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, Tab2, x10 y5 h40 w600 Buttons -Wrap, main|лекции|доклады|settings
@@ -397,8 +518,6 @@ Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не
 Gui, Add, Text, x10 y585 w111 h30 , v 0.5.1
 
 ;-------------------------------- техничка -----------------------------------
-iniFile :=A_ScriptDir "\settings.ini"
-; Загружаем данные при запуске
 
 LoadData()
 {
@@ -4934,15 +5053,3 @@ sleep 111
 sendplay {f12}
 }
 return
-
-
-
-
-
-
-
-
-
-
-
-
