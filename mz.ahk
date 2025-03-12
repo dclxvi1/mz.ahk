@@ -1,5 +1,5 @@
 #SingleInstance Force
-#IfWinActive MTA
+
 CheckUIA()
 {
     if (!A_IsCompiled && !InStr(A_AhkPath, "_UIA")) {
@@ -20,7 +20,7 @@ if not A_IsAdmin
     ExitApp 
 }
 
-global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , Gender :=""
+global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , Gender :="", FIO :="", Rang :=""
 CheckUIA()
 Gui, Color, 202127 ; колор фона
 Gui, Show, center w700 h600, mz by mck
@@ -31,52 +31,42 @@ scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
 
-; Локальная версия
-currentVersion := "0.5.6"  ; Укажите текущую версию скрипта
+currentVersion := "0.5.7 alpa"  ; Укажите текущую версию скрипта
 
-; Ссылки на GitHub
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 
-; Функция для проверки обновлений
 CheckForUpdates() {
     global currentVersion, githubVersionURL, githubScriptURL, scriptPath, scriptDir, scriptName
 
-    ; Загружаем версию с GitHub
     whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
     whr.Open("GET", githubVersionURL, true)
     whr.Send()
     whr.WaitForResponse()
 
-    ; Проверяем статус ответа
     status := whr.Status
     if (status != 200) {
         MsgBox, 16, Ошибка, Не удалось получить версию с сервера. Код статуса: %status%
         return
     }
 
-    ; Убираем все лишние символы (пробелы, переносы строк и т.д.)
     serverVersion := Trim(whr.ResponseText)
     serverVersion := RegExReplace(serverVersion, "[\r\n]+", "")  ; Удаляем переносы строк
     serverVersion := RegExReplace(serverVersion, "\s+", "")     ; Удаляем все пробелы
 
-    ; Убираем лишние символы из локальной версии
     currentVersion := Trim(currentVersion)
     currentVersion := RegExReplace(currentVersion, "[\r\n]+", "")
     currentVersion := RegExReplace(currentVersion, "\s+", "")
 
-    ; Сравниваем версии
     if (serverVersion != currentVersion) {
         MsgBox, 4, Обновление, Доступна новая версия (%serverVersion%). Хотите обновить?
         IfMsgBox, No
             return
 
-        ; Загружаем новый скрипт
         whr.Open("GET", githubScriptURL, true)
         whr.Send()
         whr.WaitForResponse()
 
-        ; Проверяем статус ответа
         status := whr.Status
         if (status != 200) {
             MsgBox, 16, Ошибка, Не удалось загрузить новый скрипт. Код статуса: %status%
@@ -85,14 +75,11 @@ CheckForUpdates() {
 
         newScript := whr.ResponseText
 
-        ; Переименовываем старый скрипт
         oldScriptPath := scriptDir "\" RegExReplace(scriptName, "\.ahk$", "") " (old).ahk"
         FileMove, %scriptPath%, %oldScriptPath%
 
-        ; Сохраняем новый скрипт
         FileAppend, %newScript%, %scriptPath%
 
-        ; Обновляем текущую версию
         currentVersion := serverVersion
 
         MsgBox, 64, Успех, Скрипт успешно обновлен. Перезапустите скрипт.
@@ -100,7 +87,6 @@ CheckForUpdates() {
     }
 }
 
-; Проверка обновлений при запуске
 CheckForUpdates()
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
@@ -145,9 +131,12 @@ ExitApp
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
-Gui 1:Add, Tab2, x10 y5 h40 w600 Buttons -Wrap, main|лекции|доклады|settings
-
-Gui 1:Add, GroupBox, x10 y40 w225 h90 cFD7B7C, [ общие ]
+Gui 1:Add, Tab2, x10 y5 h40 w600 Buttons -Wrap, main|лекции|доклады
+Gui 1:Font, s11 cWhite Bold, Gilroy
+Gui, Add, Button, x520 y10 w170 h30 gData, Данные сотрудника
+Gui 1:Font, s12 cWhite Bold, Gilroy
+Gui 1:Add, GroupBox, x10 y40 w225 h270 cFD7B7C, [ общие ]
+Gui 1:Add, GroupBox, x10 y120 w225 h190
 Gui 1:Font, s8 White Bold, Gilory
 Gui, Add, Text, x2 x20 y65 w111 h15 cWhite, • смена1
 Gui, Add, Text, x2 x67 y65 w150 h15 cFD7B7C, — fracvoice 2 + доклады
@@ -155,12 +144,22 @@ Gui, Add, Text, x2 x20 y80 w150 h15 cWhite, • смена2
 Gui, Add, Text, x2 x67 y80 w150 h15 cFD7B7C, — доклад о сдаче смены
 Gui, Add, Text, x2 x20 y95 w150 h15 cWhite, • рация1
 Gui, Add, Text, x2 x68 y95 w150 h15 cFD7B7C, — отыгровки + заготовка (тег)
-;
 Gui, Add, Text, x2 x20 y110 w100 h15 cWhite, • медкарта1
 Gui, Add, Text, x2 x85 y110 w120 h15 cFD7B7C, — выдача мед. карты
+
+Gui, Add, Text, x2 x20 y140 w111 h15 cWhite, • ctrl + 1
+Gui, Add, Text, x2 x65 y140 w150 h15 cFD7B7C, — приветствие
+Gui, Add, Text, x2 x20 y155 w150 h15 cWhite, • ctrl + 2
+Gui, Add, Text, x2 x65 y155 w150 h15 cFD7B7C, — фраза "чем могу помочь"
+Gui, Add, Text, x2 x20 y170 w150 h15 cWhite, • ctrl + 3
+Gui, Add, Text, x2 x65 y170 w150 h15 cFD7B7C, — фраза "выпишу вам миг"
+Gui, Add, Text, x2 x20 y185 w150 h15 cWhite, • ctrl + 4
+Gui, Add, Text, x2 x65 y185 w160 h15 cFD7B7C, — выдача лекарства
+Gui, Add, Text, x2 x20 y200 w150 h15 cWhite, • ctrl + 5
+Gui, Add, Text, x2 x65 y200 w160 h15 cFD7B7C, — самолечение
 Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v 0.5.6
+Gui, Add, Text, x10 y585 w111 h30 , v%currentversion%
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x237 y40 w455 h138 cFD7B7C, [ вызов ]
@@ -173,148 +172,64 @@ Gui, Add, Text, x275 y95 w300 h15 cWhite, — доклад о принятии |
 Gui, Add, Text, x247 y110 w300 h15 cWhite, | отмене | ложном вызове ( С НАПАРНИКОМ )
 Gui, Add, Text, x247 y125 w210 h15 cFD7B7C, • созн1
 Gui, Add, Text, x286 y125 w210 h15 cWhite, — приведение в сознание пациента
-Gui, Add, Text, x247 y140 w210 h15 cFD7B7C, • ctrl + 1
-Gui, Add, Text, x292 y140 w288 h15 cWhite, — каталка (Right Control для продолжения)
-Gui, Add, Text, x247 y155 w210 h15 cFD7B7C, • ctrl + 2
+Gui, Add, Text, x247 y140 w210 h15 cFD7B7C, • winl + 1
+Gui, Add, Text, x292 y140 w288 h15 cWhite, — каталка
+Gui, Add, Text, x247 y155 w210 h15 cFD7B7C, • win + 2
 Gui, Add, Text, x292 y155 w288 h15 cWhite, — госпитализация
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
-Gui 1:Add, GroupBox, x10 y125 w225 h415 cFD7B7C, [ лекарства ]
+Gui 1:Add, GroupBox, x10 y305 w225 h245 cFD7B7C, [ лекарства ]
 Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x2 x20 y150 w150 h15 cWhite, • живот1
-Gui, Add, Text, x2 x20 y165 w150 h15 cWhite, • тошнота1
-Gui, Add, Text, x2 x20 y180 w150 h15 cWhite, • отравление1
-Gui, Add, Text, x2 x20 y195 w150 h15 cWhite, • ушиб1
-Gui, Add, Text, x2 x20 y210 w150 h15 cWhite, • обезбол1
-Gui, Add, Text, x2 x20 y225 w150 h15 cWhite, • запор1
-Gui, Add, Text, x2 x20 y240 w150 h15 cWhite, • понос1
-Gui, Add, Text, x2 x20 y255 w150 h15 cWhite, • геморрой1
-Gui, Add, Text, x2 x20 y270 w150 h15 cWhite, • суставы1
-Gui, Add, Text, x2 x20 y285 w150 h15 cWhite, • судороги1
-Gui, Add, Text, x2 x20 y300 w150 h15 cWhite, • витамины1
-Gui, Add, Text, x2 x20 y315 w150 h15 cWhite, • аллергия1
-Gui, Add, Text, x2 x20 y330 w150 h15 cWhite, • простуда1
-Gui, Add, Text, x2 x20 y345 w150 h15 cWhite, • насморк1
-Gui, Add, Text, x2 x20 y360 w150 h15 cWhite, • бессоница1
-Gui, Add, Text, x2 x20 y375 w150 h15 cWhite, • печень1
-Gui, Add, Text, x2 x20 y390 w150 h15 cWhite, • половые1
-Gui, Add, Text, x2 x20 y405 w150 h15 cWhite, • сердце1
-Gui, Add, Text, x2 x20 y420 w150 h15 cWhite, • зубы1
-Gui, Add, Text, x2 x20 y435 w150 h15 cWhite, • глаза1
-Gui, Add, Text, x2 x20 y450 w150 h15 cWhite, • ожог1
-Gui, Add, Text, x2 x20 y465 w150 h15 cWhite, • уши1
-Gui, Add, Text, x2 x20 y480 w150 h15 cWhite, • почки1
-Gui, Add, Text, x2 x20 y495 w150 h15 cWhite, • давление1
-Gui, Add, Text, x2 x20 y510 w150 h15 cWhite, • мочевой1
+Gui, Add, Text, x2 x20 y330 w70 h15 cWhite, • живот1
+Gui, Add, Text, x2 x20 y345 w70 h15 cWhite, • тошнота1
+Gui, Add, Text, x2 x20 y360 w90 h15 cWhite, • отравление1
+Gui, Add, Text, x2 x20 y375 w70 h15 cWhite, • ушиб1
+Gui, Add, Text, x2 x20 y390 w70 h15 cWhite, • обезбол1
+Gui, Add, Text, x2 x20 y405 w70 h15 cWhite, • запор1
+Gui, Add, Text, x2 x20 y420 w70 h15 cWhite, • понос1
+Gui, Add, Text, x2 x20 y435 w70 h15 cWhite, • геморрой1
+Gui, Add, Text, x2 x20 y450 w70 h15 cWhite, • суставы1
+Gui, Add, Text, x2 x20 y465 w70 h15 cWhite, • судороги1
+Gui, Add, Text, x2 x20 y480 w70 h15 cWhite, • витамины1
+Gui, Add, Text, x2 x20 y495 w70 h15 cWhite, • аллергия1
+Gui, Add, Text, x2 x20 y510 w70 h15 cWhite, • простуда1
+Gui, Add, Text, x2 x20 y525 w70 h15 cWhite, • насморк1
+Gui, Add, Text, x120 y330 w70 h15 cWhite, • бессоница1
+Gui, Add, Text, x120 y345 w70 h15 cWhite, • печень1
+Gui, Add, Text, x120 y360 w70 h15 cWhite, • половые1
+Gui, Add, Text, x120 y375 w70 h15 cWhite, • сердце1
+Gui, Add, Text, x120 y390 w70 h15 cWhite, • зубы1
+Gui, Add, Text, x120 y405 w70 h15 cWhite, • глаза1
+Gui, Add, Text, x120 y420 w70 h15 cWhite, • ожог1
+Gui, Add, Text, x120 y435 w70 h15 cWhite, • уши1
+Gui, Add, Text, x120 y450 w70 h15 cWhite, • почки1
+Gui, Add, Text, x120 y465 w70 h15 cWhite, • давление1
+Gui, Add, Text, x120 y480 w70 h15 cWhite, • мочевой1
+;---
+Gui, 1:Add, GroupBox, x237 y178 h500 w455 h144 cFD7B7C, [ Причины для увольнения из «Ю» ( 9+ ) ]
+Gui, 1:Font, S8 Cwhite Bold, Gilroy
+Gui, 1:Add, Text, x247 y195 h20 w280 cFD7B7C, Неактив
+Gui, 1:Add, Text, x293 y195 h20 w280, - долгое отсутствие на рабочем месте
+Gui, 1:Add, Text, x247 y210 h20 w280 cFD7B7C, Нарушение ПДСФ/ФР
+Gui, 1:Add, Text, x368 y210 h20 w222, - неоднократное нарушение дисциплины 
+Gui, 1:Add, Text, x247 y225 h20 w280, или грубое нарушение дисциплины 
+Gui, 1:Add, Text, x247 y240 h20 w280 cFD7B7C, Нахождение в ОЧС
+Gui, 1:Add, Text, x350 y240 h20 w232, - непригодность ко службе 
+Gui, 1:Add, Text, x247 y255 h20 w280 cFD7B7C, Снятие с лидерки
+Gui, 1:Add, Text, x345 y255 h20 w232, - выслуга срока службы 
+Gui, 1:Add, Text, x247 y270 h20 w280 cFD7B7C, Нарушение IC документа
+Gui, 1:Add, Text, x310 y270 h20 w200, - реализация дисциплинарного 
+Gui, 1:Add, Text, x247 y285 h20 w180, взыскания в виде увольнения 
+Gui, 1:Add, Text, x247 y300 h20 w280 cFD7B7C, ПСЖ
+Gui, 1:Add, Text, x275 y300 h20 w200, - по собственному желанию
 
-; ---------------------------------------------------------
-
-Gui 1:Font, s12 White Bold, Gilory
-Gui, Add, Text, x350 y190 w240 h30 cWhite, [ структура управления ОКБ ]
-
-Gui 1:Add, GroupBox, x395 y215 w135 h55
-Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x427 y232 w99 h15 cWhite, главный врач
-Gui 1:Font, s9 White Bold, Gilory
-Gui, Add, Text, x421 y247 w100 h20 cFD7B7C, Renat_McKenzy
-
-Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x389 y270 w11 h15 cWhite, /
-Gui, Add, Text, x384 y282 w11 h15 cWhite, /
-Gui, Add, Text, x530 y270 w11 h15 cWhite, \
-Gui, Add, Text, x535 y282 w11 h15 cWhite, \
-Gui, Add, Text, x463 y270 w11 h15 cWhite, |
-Gui, Add, Text, x463 y282 w11 h15 cWhite, |
-
-Gui 1:Add, GroupBox, x300 y290 w100 h45
-Gui 1:Add, GroupBox, x415 y290 w100 h45
-Gui 1:Add, GroupBox, x530 y290 w100 h45
-
-Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x320 y303 w70 h15 cWhite, заместитель гв
-Gui, Add, Text, x435 y303 w70 h15 cWhite, заместитель гв
-Gui, Add, Text, x550 y303 w70 h15 cWhite, заместитель гв
-Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x318 y314 w70 h19 cFD7B7C, Lev_McKenzy
-Gui, Add, Text, x419 y314 w94 h19 cFD7B7C, German_McKenzy
-Gui, Add, Text, x534 y314 w94 h19 cFD7B7C, Evgeniy_Jefferson
-
-Gui, Add, GroupBox, x282 y364 w368 h7
-
-Gui, Add, Text, x295 y335 w11 h15 cwhite, /
-Gui, Add, Text, x290 y346 w11 h15 cwhite, /
-Gui, Add, Text, x286 y354 w11 h15 cwhite, /
-
-Gui, Add, Text, x630 y334 w11 h15 cwhite, \
-Gui, Add, Text, x635 y345 w11 h15 cwhite, \
-Gui, Add, Text, x638 y352 w11 h15 cwhite, \
-
-Gui, Add, Text, x463 y335 w11 h15 cwhite, |
-Gui, Add, Text, x463 y345 w11 h15 cwhite, |
-Gui, Add, Text, x463 y352 w11 h15 cwhite, |
-
-Gui, Add, Text, x275 y375 w11 h15 cwhite, /
-Gui 1:Add, GroupBox, x240 y397 w90 h40
-
-Gui, Add, Text, x400 y375 w11 h15 cwhite, /
-Gui 1:Add, GroupBox, x358 y385 w90 h40
-
-Gui, Add, Text, x535 y375 w11 h15 cwhite, \
-Gui 1:Add, GroupBox, x495 y385 w90 h40
-
-Gui, Add, Text, x648 y376 w11 h15 cwhite, \
-Gui 1:Add, GroupBox, x607 y397 w90 h40
-
-Gui, Add, Text, x275 y385 w11 h15 cwhite, |
-Gui, Add, Text, x652 y387 w11 h15 cwhite, |
-
-Gui 1: Font, s11 cWhite Bold, Gilroy
-Gui, Add, Text, x264 y412 w60 h15 cFD7B7C, ОРИТ
-Gui, Add, Text, x378 y400 w60 h15 cFD7B7C, ОСМП
-Gui, Add, Text, x517 y400 w60 h20 cFD7B7C, ЦЭМП
-Gui, Add, Text, x640 y412 w40 h20 cFD7B7C, МА
-
-Gui, Add, Text, x283 y437 w60 h20 cwhite, |
-Gui, Add, Text, x397 y425 w60 h20 cwhite, |
-Gui, Add, Text, x539 y425 w60 h20 cwhite, |
-Gui, Add, Text, x650 y437 w60 h20 cwhite, |
-
-Gui 1:Add, GroupBox, x240 y450 w90 h40
-Gui 1:Add, GroupBox, x358 y438 w90 h40
-Gui 1:Add, GroupBox, x495 y438 w90 h40
-Gui 1:Add, GroupBox, x607 y450 w90 h40
-
-Gui, Add, Text, x283 y490 w60 h20 cwhite, |
-Gui, Add, Text, x397 y478 w60 h20 cwhite, |
-Gui, Add, Text, x539 y478 w60 h20 cwhite, |
-Gui, Add, Text, x650 y490 w60 h20 cwhite, |
-
-Gui 1:Add, GroupBox, x240 y502 w90 h40
-Gui 1:Add, GroupBox, x358 y490 w90 h40
-Gui 1:Add, GroupBox, x495 y490 w90 h40
-Gui 1:Add, GroupBox, x607 y502 w90 h40
-
-Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x257 y515 w70 h15 cWhite, зам.зав.орит
-Gui, Add, Text, x373 y503 w70 h15 cWhite, зам.зав.осмп
-Gui, Add, Text, x512 y503 w70 h15 cWhite, зам.зав.цэмп
-Gui, Add, Text, x628 y515 w65 h15 cWhite, зам.зав.ма
-Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x250 y525 w77 h11 cFD7B7C, Gabriel_McKenzy
-Gui, Add, Text, x368 y513 w77 h11 cFD7B7C, Yaroslav_Norkoff
-Gui, Add, Text, x516 y513 w65 h11 cFD7B7C, *вакантно*
-Gui, Add, Text, x620 y525 w69 h11 cFD7B7C, Landon_Lacosta
-
-Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x268 y462 w60 h15 cWhite, зав.орит
-Gui, Add, Text, x381 y450 w60 h15 cWhite, зав.осмп
-Gui, Add, Text, x520 y450 w60 h15 cWhite, зав.цэмп
-Gui, Add, Text, x636 y462 w60 h15 cWhite, зав.ма
-Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x260 y472 w60 h11 cFD7B7C, Kira_Alaska
-Gui, Add, Text, x368 y460 w77 h11 cFD7B7C, Timur_Moscovtsev
-Gui, Add, Text, x516 y460 w65 h11 cFD7B7C, Frank_Devin
-Gui, Add, Text, x620 y472 w69 h11 cFD7B7C, Felix_Jefferson
+Gui, 1:Font, S11 Cwhite Bold, Gilroy
+Gui, 1:Add, GroupBox, x237 y323 w455 h70 cFD7B7C, гор. клавиши
+Gui, 1:Font, S8 Cwhite Bold, Gilroy
+Gui, 1:Add, Text, x247 y345 h20 w280 cFD7B7C, shift + f1
+Gui, 1:Add, Text, x295 y345 h20 w180, - для перезапуска скрипта
+Gui, 1:Add, Text, x247 y360 h20 w280 cFD7B7C, shift + f2
+Gui, 1:Add, Text, x295 y360 h20 w180, - для остановки скрипта
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -448,7 +363,7 @@ Gui, Add, Text, x2 x360 y430 w222 h15 cFD7B7C, — вступительная
 
 Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v 0.5.6
+Gui, Add, Text, x10 y585 w111 h30 , v%currentversion%
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -631,13 +546,13 @@ Gui 1:Add, GroupBox, x348 y448 w307 h112 cFD7B7C
 
 Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v 0.5.6
+Gui, Add, Text, x10 y585 w111 h30 , v%currentversion%
 
 ;-------------------------------- техничка -----------------------------------
 
 LoadData()
 {
-    global Tag, Partners, City, Post, Frac, Gender , iniFile
+    global Tag, Partners, City, Post, Frac, Gender , iniFile , FIO , Rang
     if (FileExist(iniFile))
     {
         FileRead, FileContent, %iniFile%
@@ -658,6 +573,10 @@ LoadData()
                 Frac := Value
             else if (Var = "Gender")
                 Gender := Value
+            else if (Var = "FIO")
+                FIO := Value
+            else if (Var = "Rang")
+                Rang := Value
         }
     }
     if (Gender = "")
@@ -667,76 +586,6 @@ LoadData()
 ;------------------------------ settings ------------------------------------
 
 LoadData()
-
-Gui, 1:Tab, 4
-Gui, 1:Font, S11 Cwhite Bold, Gilroy
-Gui, 1:Add, GroupBox, x5 y350 h500 w365 h240 cFD7B7C, [ Причины для увольнения из Ю ( 9+ )]
-Gui, 1:Font, S8 Cwhite Bold, Gilroy
-Gui, 1:Add, Text, x15 y375 h20 w280 cFD7B7C, Неактив
-Gui, 1:Add, Text, x60 y375 h20 w280, - долгое отсутствие на рабочем месте
-Gui, 1:Add, Text, x15 y390 h20 w280 cFD7B7C, Нарушение ПДСФ/ФР
-Gui, 1:Add, Text, x135 y390 h20 w232, - неоднократное нарушение дисциплины 
-Gui, 1:Add, Text, x15 y405 h20 w280, или грубое нарушение дисциплины 
-Gui, 1:Add, Text, x15 y420 h20 w280 cFD7B7C, Нахождение в ОЧС
-Gui, 1:Add, Text, x119 y420 h20 w232, - непригодность ко службе 
-Gui, 1:Add, Text, x15 y435 h20 w280 cFD7B7C, Снятие с лидерки
-Gui, 1:Add, Text, x110 y435 h20 w232, - выслуга срока службы 
-Gui, 1:Add, Text, x15 y435 h20 w280 cFD7B7C, Нарушение IC документа
-Gui, 1:Add, Text, x150 y435 h20 w200, - реализация дисциплинарного 
-Gui, 1:Add, Text, x15 y450 h20 w180, взыскания в виде увольнения 
-Gui, 1:Add, Text, x15 y465 h20 w280 cFD7B7C, ПСЖ
-Gui, 1:Add, Text, x43 y465 h20 w200, - по собственному желанию
-
-Gui, 1:Tab, 4
-Gui, 1:Font, S11 Cwhite Bold, Gilroy
-Gui, 1:Add, GroupBox, x375 y470 w310 h120 cFD7B7C, гор. клавиши
-Gui, 1:Font, S8 Cwhite Bold, Gilroy
-Gui, 1:Add, Text, x385 y495 h20 w280 cFD7B7C, shift + f1
-Gui, 1:Add, Text, x430 y495 h20 w180, - для перезапуска скрипта
-Gui, 1:Add, Text, x385 y510 h20 w280 cFD7B7C, shift + p
-Gui, 1:Add, Text, x430 y510 h20 w180, - для остановки скрипта
-
-Gui, Tab, 4
-Gui, 1:Font, S11  Cwhite Bold, Gilroy
-Gui, Add, Text, x10 y35 w200 h20, ваш тег (к примеру: Зам.ГВ)
-Gui, Add, Edit, x10 y55 w200 h20 cblack vTag, %Tag%
-Gui, Add, Text, x10 y85 w400 h20, введите напарника (к примеру: Ренат Макензи)
-Gui, Add, Edit, x10 y105 w200 h20 cblack vPartners, %Partners%
-Gui, Add, Text, x10 y135 w400 h20, введите город (к примеру: ОКБ-М)
-Gui, Add, ComboBox, x10 y155 w200 h220 cblack vCity, ЦГБ-П|ОКБ-М|ЦГБ-Н
-Gui, Add, Text, x10 y185 w400 h20, введите номер поста (к примеру: 1)
-Gui, Add, Edit, x10 y205 w200 h20 cblack vPost, %Post%
-Gui, Add, Text, x10 y235 w600 h20, фракция, на которой вы осуществляете дежурство (к примеру: УВД-М)
-Gui, Add, ComboBox, x10 y255 w200 h220 cblack vFrac, РЖД|МО|УВД-П|УВД-М|УВД-Н|ГИБДД-П|ГИБДД-М|ГИБДД-Н
-; --
-Gui, Add, Text, x380 y40 w300 h20, Ваш пол: [ введите Мужской | Женский ]
-Gui, Add, Edit, x380 y60 w300 h20 cblack vGender, %Gender%
-; --
-Gui, Add, Button, x10 y290 w200 h30 gSaveData, Сохранить
-Return
-
-IniRead(Section, Key, Default = "") {
-  IniRead, OutputVar, %iniFile%, %Section%, %Key%, %Default%
-  return OutputVar
-}
-
-; Обработчик нажатия кнопки Сохранить
-SaveData:
-    ; Сохраняем введенные данные
-    Gui, Submit, NoHide
-    ; Сохраняем данные в файл с фиксированным именем
-    FileDelete, %iniFile%
-    FileAppend, 
-    (
-        Tag: %Tag%`n
-        Partners: %Partners%`n
-        City: %City%`n
-        Post: %Post%`n
-        Frac: %Frac%`n
-        Gender: %Gender%`n  
-    ), %iniFile%
-    MsgBox, 64, Сохранено, Данные успешно сохранены в файл: %iniFile% .
-Return
 
 SetSpecialSettings(gender)
 {
@@ -775,8 +624,79 @@ reload
 GuiClose:
 ExitApp
 
-+p::
++f2::
 Pause
+
+IniRead(Section, Key, Default = "") {
+  IniRead, OutputVar, %iniFile%, %Section%, %Key%, %Default%
+  return OutputVar
+}
+
+Data:
+Gui, NewWindow: New, , data
+Gui, Color, 202127 
+Gui, Show, center w610 h512
+Gui, Font, S13  Cwhite Bold, Gilroy
+Gui, Add, Text, x10 y10 w300 h20 cFD7B7C, [ Данные сотрудника ]
+Gui, Font, S10  Cwhite Bold, Gilroy
+Gui, Add, DropDownList, x435 y10 w160 h220 cblack vCity, ЦГБ-П|ОКБ-М|ЦГБ-Н
+Gui, Font, S9  Cwhite Bold, Gilroy
+Gui, Add, Text, x15 y40 w250 h20, ФИО | *МаКензи Герман Викторович*
+Gui, Add, Edit, x15 y60 w260 h24 cblack vFIO, %FIO%
+Gui, Add, Text, x285 y40 w300 h20, Занимаемая должность | *Врач-терапевт*
+Gui, Add, DropDownList, x285 y60 w200 h420 cblack vRang , Интерн|Фельдшер|Лаборант|Врач-стажер|Врач-участковый|Врач-терапевт|Врач-хирург|Заведующий отделением|Заместитель ГВ|Главный врач
+Gui, Add, Text, x15 y100 w160 h20, Используемый тег | *ОРИТ*
+Gui, Add, Edit, x15 y120 w165 h20 cblack vTag, %Tag%
+Gui, Add, Text, x190 y100 w400 h20, Введите Имя Фамилию напарника для докладов | *Ренат МаКензи*
+Gui, Add, Edit, x190 y120 w400 h20 cblack vPartners, %Partners%
+Gui, Add, Text, x375 y160 w450 h20, Введите номер поста (к примеру: 1)
+Gui, Add, Edit, x375 y180 w220 h24 cblack vPost, %Post%
+Gui, Add, Text, x15 y160 w600 h20, Выберите название фракции, на которой вы дежурите
+Gui, Add, DropDownList, x15 y180 w350 h220 cblack vFrac, РЖД|МО|УВД-П|УВД-М|УВД-Н|ГИБДД-П|ГИБДД-М|ГИБДД-Н
+; --
+Gui, Add, Text, x15 y220 w300 h20, Пол персонажа: [ функция не работоспособна ]
+Gui, Add, Radio, x15 y240 w100 h17 cwhite, Мужской
+Gui, Add, Radio, x115 y240 w100 h17 cwhite, Женский
+; --
+Gui, Add, Button, x15 y270 w200 h30 gSaveData, Сохранить
+;Gui, Add, Button, x222 y270 w200 h30 gReset, Сбросить
+Gui Font, s7 White Bold, Gilory
+Gui, Add, Text, x188 y500 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
+Gui, Add, Text, x10 y500 w111 h30 , v%currentversion%
+
+    Gui, NewWindow:Show, , mz.ahk by mck
+return
+
+SaveData:
+    ; Сохраняем введенные данные
+    Gui, Submit, NoHide
+    ; Сохраняем данные в файл с фиксированным именем
+    FileDelete, %iniFile%
+    FileAppend, 
+    (
+        Tag: %Tag%`n
+        Partners: %Partners%`n
+        City: %City%`n
+        Post: %Post%`n
+        Frac: %Frac%`n
+        Gender: %Gender%`n  
+        FIO: %FIO%`n  
+        Rang: %Rang%`n  
+    ), %iniFile%
+    MsgBox, 64, Сохранено, Данные успешно сохранены в файл: %iniFile% .
+Return
+
+; Подпрограмма чтения значения из INI-файла
+GetIniValue(Key) {
+    IniRead, Value, %iniFile%, %Section%, %Key%
+    return Value
+}
+; ----------------------------------------------------------------------------
+; ----------------------------------------------------------------------------
+IniWrite(Value, iniFile, Section, Key) {
+  IniWrite, %Value%, %iniFile%, %Section%, %Key%
+}
+; ----------------------------------------------------------------------------
 
 link1:
 run, https://imgur.com/a/yrhyK1e
@@ -878,7 +798,68 @@ link6v:
 run, https://imgur.com/a/Oqp4vLV
 return
 
+
+
 ; ------------------------------- общее -------------------------------
+
+^1::
+SendMessage, 0x50,, 0x4190419,, A
+sendplay {T}|
+sleep 122
+sendplay Здравствуйте, я %Rang% %City% %FIO%. {enter}
+sleep 111
+sendplay {T}
+sleep 111
+sendplay /do На бейдже информация: %Rang% | %City% | %FIO%. {enter}
+return
+
+^2::
+SendMessage, 0x50,, 0x4190419,, A
+sendplay {T}|
+sleep 122
+sendplay Чем я могу Вам помочь? {enter}
+return
+
+^3::
+SendMessage, 0x50,, 0x4190419,, A
+sendplay {T}|
+sleep 122
+sendplay Я пропишу Вам миг, его стоимость 500 рублей, Вы согласны? {enter}
+return
+
+^4::
+SendMessage, 0x50,, 0x4190419,, A
+sendplay {T}|
+sleep 122
+sendplay /do В медицинской сумке лежит необходимое лекарство, бланк выписки и ручка. {enter}
+sleep 111
+sendplay {T}
+sleep 111
+sendplay /me открыв сумку, достал бланк и ручку, затем начал заполнять бланк {enter}
+sleep 111
+sendplay {T}
+sleep 111
+sendplay /todo Возьмите, пожалуйста, бланк выписки и лекарство*заполнив бланк, затем достав лекарство и положив ручку в сумку {enter}
+sleep 111
+sendplay {T}
+sleep 111
+sendplay /b Пропиши в обычном чате: /me взял лекарство{enter}
+sleep 111
+sendplay {T}
+sleep 111
+sendplay {/}helpmed{space}
+return
+
+^5::
+SendMessage, 0x50,, 0x4190419,, A
+sendplay {T}|
+sleep 122
+sendplay /do В медицинской сумке находятся медицинские препараты. {enter}
+sleep 111
+sendplay {T}
+sleep 111
+sendplay /me открыв сумку, достал необходимое лекарство и употребил его {enter}
+return
 
 :*?:рация1::
 SendMessage, 0x50,, 0x4190419,, A 
@@ -982,6 +963,8 @@ sendplay {esc}
 sleep 100
 sendplay {F8}
 sleep 100
+       SendPlay ^A{Delete}
+       sleep 500
 sendplay какой отчет желаете сделать? (принял | прибыл | увожу | отменен):{space}
 Input TryRes, V, {Enter}
 if(TryRes=="принял")||(TryRes=="пghbyzk")
@@ -999,6 +982,8 @@ if(TryRes=="принял")||(TryRes=="пghbyzk")
        sleep 111
        Gosub, razia
        return
+    if (StopScript := true)
+        return
  } 
 if(TryRes=="прибыл")||(TryRes=="ghb,sk")
    {
@@ -1052,7 +1037,6 @@ if(TryRes=="ложный")||(TryRes=="kj;ysq")
        Gosub, razia
        return
    }
-return
 
 :*?:в1::
 global Tag, Partners
@@ -1134,6 +1118,8 @@ if(TryRes=="ложный")||(TryRes=="kj;ysq")
        Gosub, razia
        return
    }
+
+return
 
 razia:
   sendplay {f8}
@@ -1219,7 +1205,7 @@ if(TryRes=="нет")||(TryRes=="ytn")||(TryRes=="НЕТ")||(TryRes=="YTN")
  }
 return
 
-^1::
+#1::
 SendMessage, 0x50,, 0x4190419,, A
 sendplay {f8}
 sleep 120
@@ -1232,7 +1218,7 @@ sleep 111
 sendplay me вернул каталку в прежнее состояние {enter}{f8}
 return
 
-^2::
+#2::
 SendMessage, 0x50,, 0x4190419,, A
 sendplay {f8}
 sleep 120
@@ -1651,7 +1637,7 @@ Gosub, razia
 return
 }
 return
-;----------------------
+;----------------------------------------------------------------------------------------------------------------------------------------
 :*?:пркн1::
 Sendmessage, 0x50,, 0x4190419,, A
 sleep 250
@@ -1689,7 +1675,7 @@ Gosub, razia
 return
 }
 return
-;------------------
+;----------------------------------------------------------------------------------------------------------------------------------------
 :*?:првн1::
 Sendmessage, 0x50,, 0x4190419,, A
 sleep 250
@@ -1727,7 +1713,7 @@ Gosub, razia
 return
 }
 return
-;----------------
+;----------------------------------------------------------------------------------------------------------------------------------------
 :*?:прк1::
 Sendmessage, 0x50,, 0x4190419,, A
 sleep 250
@@ -1765,7 +1751,7 @@ Gosub, razia
 return
 }
 return
-;------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------
 :*?:прв1::
 Sendmessage, 0x50,, 0x4190419,, A
 sleep 250
@@ -1852,7 +1838,7 @@ Gosub, razia
 return
 }
 return
-;----------------------
+;----------------------------------------------------------------------------------------------------------------------------------------
 :*?:постн1::
 Sendmessage, 0x50,, 0x4190419,, A
 sleep 250
@@ -1950,7 +1936,7 @@ Gosub, razia
 return
 }
 return
-;----------------------
+;----------------------------------------------------------------------------------------------------------------------------------------
 :*?:поствертн1::
 Sendmessage, 0x50,, 0x4190419,, A
 sleep 250
@@ -1999,7 +1985,7 @@ Gosub, razia
 return
 }
 return
-;------------------------------- деж на собес ------------------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------
 :*?:дежсобес1::
 Sendmessage, 0x50,, 0x4190419,, A
 sleep 250
@@ -2097,7 +2083,7 @@ Gosub, razia
 return
 }
 return
-;------------------------------- деж увд м ------------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------
 :*?:дежувд1::
 Sendmessage, 0x50,, 0x4190419,, A
 sleep 250
@@ -2195,7 +2181,7 @@ Gosub, razia
 return
 }
 return
-;------------------------ деж вч -----------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------
 :*?:дежвч1::
 Sendmessage, 0x50,, 0x4190419,, A
 sleep 250
@@ -2293,7 +2279,7 @@ Gosub, razia
 return
 }
 return
-;----------------- собес ------------------
+;----------------------------------------------------------------------------------------------------------------------------------------
 :*?:собес1::
 Sendmessage, 0x50,, 0x4190419,, A
 sleep 250
