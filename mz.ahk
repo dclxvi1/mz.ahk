@@ -31,7 +31,7 @@ scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
 
-currentVersion := "0.5.7 alpha"  ; Укажите текущую версию скрипта
+currentVersion := "0.5.7"  ; Укажите текущую версию скрипта
 
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
