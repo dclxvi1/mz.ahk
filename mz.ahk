@@ -31,7 +31,7 @@ scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
 
-currentVersion := "0.5.7"  ; Укажите текущую версию скрипта
+currentVersion := "0.5.8"  ; Укажите текущую версию скрипта
 
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
@@ -166,15 +166,15 @@ Gui 1:Add, GroupBox, x237 y40 w455 h138 cFD7B7C, [ вызов ]
 Gui 1:Font, s8 White Bold, Gilory
 Gui, Add, Text, x247 y65 w222 h15 cFD7B7C, • в1
 Gui, Add, Text, x269 y65 w300 h15 cWhite, — доклад о принятии | прибытии | госпитализации
-Gui, Add, Text, x247 y80 w222 h15 cwhite, | отмене | ложном вызове ( СОЛО )
+Gui, Add, Text, x247 y80 w333 h15 cwhite, | отмене | ложном вызове | обработке вызова на месте ( СОЛО )
 Gui, Add, Text, x247 y95 w222 h15 cFD7B7C, • вн1
 Gui, Add, Text, x275 y95 w300 h15 cWhite, — доклад о принятии | прибытии | госпитализации
-Gui, Add, Text, x247 y110 w300 h15 cWhite, | отмене | ложном вызове ( С НАПАРНИКОМ )
+Gui, Add, Text, x247 y110 w393 h15 cWhite, | отмене | ложном вызове | обработке вызова на месте ( С НАПАРНИКОМ )
 Gui, Add, Text, x247 y125 w210 h15 cFD7B7C, • созн1
 Gui, Add, Text, x286 y125 w210 h15 cWhite, — приведение в сознание пациента
-Gui, Add, Text, x247 y140 w210 h15 cFD7B7C, • winl + 1
+Gui, Add, Text, x247 y140 w210 h15 cFD7B7C, • altl + 1
 Gui, Add, Text, x292 y140 w288 h15 cWhite, — каталка
-Gui, Add, Text, x247 y155 w210 h15 cFD7B7C, • win + 2
+Gui, Add, Text, x247 y155 w210 h15 cFD7B7C, • alt + 2
 Gui, Add, Text, x292 y155 w288 h15 cWhite, — госпитализация
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
@@ -206,7 +206,8 @@ Gui, Add, Text, x120 y450 w70 h15 cWhite, • почки1
 Gui, Add, Text, x120 y465 w70 h15 cWhite, • давление1
 Gui, Add, Text, x120 y480 w70 h15 cWhite, • мочевой1
 ;---
-Gui, 1:Add, GroupBox, x237 y178 h500 w455 h144 cFD7B7C, [ Причины для увольнения из «Ю» ( 9+ ) ]
+Gui 1:Font, s12 cWhite Bold, Gilroy
+Gui, 1:Add, GroupBox, x237 y173 h500 w455 h149 cFD7B7C, [ Причины для увольнения из «Ю» ( 9+ ) ]
 Gui, 1:Font, S8 Cwhite Bold, Gilroy
 Gui, 1:Add, Text, x247 y195 h20 w280 cFD7B7C, Неактив
 Gui, 1:Add, Text, x293 y195 h20 w280, - долгое отсутствие на рабочем месте
@@ -223,8 +224,8 @@ Gui, 1:Add, Text, x247 y285 h20 w180, взыскания в виде уволь�
 Gui, 1:Add, Text, x247 y300 h20 w280 cFD7B7C, ПСЖ
 Gui, 1:Add, Text, x275 y300 h20 w200, - по собственному желанию
 
-Gui, 1:Font, S11 Cwhite Bold, Gilroy
-Gui, 1:Add, GroupBox, x237 y323 w455 h70 cFD7B7C, гор. клавиши
+Gui, 1:Font, S12 Cwhite Bold, Gilroy
+Gui, 1:Add, GroupBox, x237 y322 w455 h70 cFD7B7C, [ гор. клавиши ]
 Gui, 1:Font, S8 Cwhite Bold, Gilroy
 Gui, 1:Add, Text, x247 y345 h20 w280 cFD7B7C, shift + f1
 Gui, 1:Add, Text, x295 y345 h20 w180, - для перезапуска скрипта
@@ -965,7 +966,7 @@ sendplay {F8}
 sleep 100
        SendPlay ^A{Delete}
        sleep 500
-sendplay какой отчет желаете сделать? (принял | прибыл | увожу | отменен):{space}
+sendplay какой отчет желаете сделать? (принял | прибыл | увожу | отменен | ложный | обработан):{space}
 Input TryRes, V, {Enter}
 if(TryRes=="принял")||(TryRes=="пghbyzk")
  {
@@ -1037,6 +1038,19 @@ if(TryRes=="ложный")||(TryRes=="kj;ysq")
        Gosub, razia
        return
    }
+if(TryRes=="обработан")||(TryRes=="j,hf,jnfy")
+ {
+       SendPlay ^A{Delete}
+       sleep 120
+       sendplay, do На поясе сотрудника висит рабочая рация. {enter}
+       sleep 100
+       sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
+       sleep 100
+       sendplay r [%Tag%] Вызов обработан на месте. Напарник: %Partners% {enter}
+       sleep 111
+       Gosub, razia
+       return
+   }
 
 :*?:в1::
 global Tag, Partners
@@ -1046,7 +1060,7 @@ sendplay {esc}
 sleep 100
 sendplay {F8}
 sleep 100
-sendplay какой отчет желаете сделать? ( принял | прибыл | увожу |  отменен | ложный ):{space}
+sendplay какой отчет желаете сделать? ( принял | прибыл | увожу |  отменен | ложный | обработан):{space}
 Input TryRes, V, {Enter}
 if(TryRes=="принял")||(TryRes=="пghbyzk")
  {
@@ -1114,6 +1128,19 @@ if(TryRes=="ложный")||(TryRes=="kj;ysq")
        sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
        sleep 100
        sendplay r [%Tag%] Вызов оказался ложным.{enter}
+       sleep 111
+       Gosub, razia
+       return
+   }
+if(TryRes=="обработан")||(TryRes=="j,hf,jnfy")
+ {
+       SendPlay ^A{Delete}
+       sleep 120
+       sendplay, do На поясе сотрудника висит рабочая рация. {enter}
+       sleep 100
+       sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
+       sleep 100
+       sendplay r [%Tag%] Вызов обработан на месте. {enter}
        sleep 111
        Gosub, razia
        return
@@ -1205,7 +1232,7 @@ if(TryRes=="нет")||(TryRes=="ytn")||(TryRes=="НЕТ")||(TryRes=="YTN")
  }
 return
 
-#1::
+!1::
 SendMessage, 0x50,, 0x4190419,, A
 sendplay {f8}
 sleep 120
@@ -1218,7 +1245,7 @@ sleep 111
 sendplay me вернул каталку в прежнее состояние {enter}{f8}
 return
 
-#2::
+!2::
 SendMessage, 0x50,, 0x4190419,, A
 sendplay {f8}
 sleep 120
