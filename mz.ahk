@@ -22,85 +22,75 @@ if not A_IsAdmin
 
 global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , Gender :="", FIO :="", Rang :=""
 CheckUIA()
-Gui, Color, 202127 ; колор фона
+Gui, Color, 202127
 Gui, Show, center w700 h600, mz by mck
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
-; Путь к текущему скрипту
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-
-currentVersion := "0.5.8"  ; Укажите текущую версию скрипта
-
+currentVersion := "0.6"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
-
+githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
 CheckForUpdates() {
-    global currentVersion, githubVersionURL, githubScriptURL, scriptPath, scriptDir, scriptName
-
+    global currentVersion, githubVersionURL, githubScriptURL, githubChangelogURL, scriptPath, scriptDir, scriptName
     whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
     whr.Open("GET", githubVersionURL, true)
     whr.Send()
     whr.WaitForResponse()
-
     status := whr.Status
     if (status != 200) {
         MsgBox, 16, Ошибка, Не удалось получить версию с сервера. Код статуса: %status%
         return
     }
-
     serverVersion := Trim(whr.ResponseText)
-    serverVersion := RegExReplace(serverVersion, "[\r\n]+", "")  ; Удаляем переносы строк
-    serverVersion := RegExReplace(serverVersion, "\s+", "")     ; Удаляем все пробелы
-
+    serverVersion := RegExReplace(serverVersion, "[\r\n]+", "")
+    serverVersion := RegExReplace(serverVersion, "\s+", "")
     currentVersion := Trim(currentVersion)
     currentVersion := RegExReplace(currentVersion, "[\r\n]+", "")
     currentVersion := RegExReplace(currentVersion, "\s+", "")
-
     if (serverVersion != currentVersion) {
         MsgBox, 4, Обновление, Доступна новая версия (%serverVersion%). Хотите обновить?
         IfMsgBox, No
             return
-
+        whr.Open("GET", githubChangelogURL, true)
+        whr.Send()
+        whr.WaitForResponse()
+        status := whr.Status
+        if (status != 200) {
+            MsgBox, 16, Ошибка, Не удалось получить информацию об изменениях. Код статуса: %status%
+            return
+        }
+        changelog := whr.ResponseText
         whr.Open("GET", githubScriptURL, true)
         whr.Send()
         whr.WaitForResponse()
-
         status := whr.Status
         if (status != 200) {
             MsgBox, 16, Ошибка, Не удалось загрузить новый скрипт. Код статуса: %status%
             return
         }
-
         newScript := whr.ResponseText
-
         oldScriptPath := scriptDir "\" RegExReplace(scriptName, "\.ahk$", "") " (old).ahk"
         FileMove, %scriptPath%, %oldScriptPath%
-
         FileAppend, %newScript%, %scriptPath%
-
         currentVersion := serverVersion
 
-        MsgBox, 64, Успех, Скрипт успешно обновлен. Перезапустите скрипт.
-        ExitApp  ; Завершаем текущий скрипт
+        MsgBox, 64, Скрипт обновлен, Скрипт успешно обновлен до версии %serverVersion%.`n`nОбновления:`n%changelog%
+        ExitApp
     }
 }
-
 CheckForUpdates()
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
-
-; Путь к папке в Program Files
 folderPath := "C:\Program Files\mz.ahk"
 iniFile := folderPath "\settings.ini"
 
-; Функция для проверки и создания папки, если её нет
 EnsureFolderExists() {
     global folderPath
     if !FileExist(folderPath)
     {
-        ; Пытаемся создать папку
         FileCreateDir, %folderPath%
         if ErrorLevel
         {
@@ -115,23 +105,21 @@ EnsureFolderExists() {
     }
     return true
 }
-
-; Проверяем и создаем папку при запуске
 if !EnsureFolderExists()
 {
     ExitApp  ; Завершаем скрипт, если папку не удалось создать
 }
 
-  If Not FileExist("C:\Windows\Fonts\Gilroy-Medium.ttf") ; Замените на точное имя файла шрифта
+  If Not FileExist("C:\Windows\Fonts\Gilroy-Medium.ttf")
   {
-    MsgBox, Шрифт "Gilory" не найден! Пожалуйста, установите нужные шрифты, согласно гайду.
+    MsgBox, Шрифт "Gilroy" не найден! Пожалуйста, установите нужные шрифты, согласно гайду.
 ExitApp
 }
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
-Gui 1:Add, Tab2, x10 y5 h40 w600 Buttons -Wrap, main|лекции|доклады
+Gui 1:Add, Tab2, x10 y5 h40 w600 Buttons -Wrap, main|доклады|лекции
 Gui 1:Font, s11 cWhite Bold, Gilroy
 Gui, Add, Button, x520 y10 w170 h30 gData, Данные сотрудника
 Gui 1:Font, s12 cWhite Bold, Gilroy
@@ -166,7 +154,7 @@ Gui 1:Add, GroupBox, x237 y40 w455 h138 cFD7B7C, [ вызов ]
 Gui 1:Font, s8 White Bold, Gilory
 Gui, Add, Text, x247 y65 w222 h15 cFD7B7C, • в1
 Gui, Add, Text, x269 y65 w300 h15 cWhite, — доклад о принятии | прибытии | госпитализации
-Gui, Add, Text, x247 y80 w333 h15 cwhite, | отмене | ложном вызове | обработке вызова на месте ( СОЛО )
+Gui, Add, Text, x247 y80 w343 h15 cwhite, | отмене | ложном вызове | обработке вызова на месте ( СОЛО )
 Gui, Add, Text, x247 y95 w222 h15 cFD7B7C, • вн1
 Gui, Add, Text, x275 y95 w300 h15 cWhite, — доклад о принятии | прибытии | госпитализации
 Gui, Add, Text, x247 y110 w393 h15 cWhite, | отмене | ложном вызове | обработке вызова на месте ( С НАПАРНИКОМ )
@@ -205,9 +193,9 @@ Gui, Add, Text, x120 y435 w70 h15 cWhite, • уши1
 Gui, Add, Text, x120 y450 w70 h15 cWhite, • почки1
 Gui, Add, Text, x120 y465 w70 h15 cWhite, • давление1
 Gui, Add, Text, x120 y480 w70 h15 cWhite, • мочевой1
-;---
+
 Gui 1:Font, s12 cWhite Bold, Gilroy
-Gui, 1:Add, GroupBox, x237 y173 h500 w455 h149 cFD7B7C, [ Причины для увольнения из «Ю» ( 9+ ) ]
+Gui, 1:Add, GroupBox, x237 y173 h500 w455 h155 cFD7B7C, [ Причины для увольнения из «Ю» ( 9+ ) ]
 Gui, 1:Font, S8 Cwhite Bold, Gilroy
 Gui, 1:Add, Text, x247 y195 h20 w280 cFD7B7C, Неактив
 Gui, 1:Add, Text, x293 y195 h20 w280, - долгое отсутствие на рабочем месте
@@ -234,143 +222,11 @@ Gui, 1:Add, Text, x295 y360 h20 w180, - для остановки скрипта
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
-Gui, 1:Tab, 2
-Gui 1: Font, s12 cWhite Bold, Gilroy
-Gui 1:Add, GroupBox, x10 y40 w292 h395 cFD7B7C, [ теоретические | 1 ]
-Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x2 x20 y65 w222 h15 cWhite, • лекдок
-Gui, Add, Text, x2 x69 y65 w222 h15 cFD7B7C, — уставные документы
-Gui, Add, Text, x2 x20 y80 w222 h15 cWhite, • лексуб
-Gui, Add, Text, x2 x66 y80 w150 h15 cFD7B7C, — субординация
-Gui, Add, Text, x2 x20 y95 w200 h15 cWhite, • лекрд
-Gui, Add, Text, x2 x63 y95 w215 h15 cFD7B7C, — рабочий день
-Gui, Add, Text, x2 x20 y110 w200 h15 cWhite, • лекрация
-Gui, Add, Text, x2 x79 y110 w215 h15 cFD7B7C, — рации больницы
-Gui, Add, Text, x2 x20 y125 w200 h15 cWhite, • лекксмп
-Gui, Add, Text, x2 x72 y125 w215 h15 cFD7B7C, — карета СМП
-Gui, Add, Text, x2 x20 y140 w200 h15 cWhite, • лексобес
-Gui, Add, Text, x2 x79 y140 w215 h15 cFD7B7C, — дежурство на собеседованиях
-Gui, Add, Text, x2 x20 y155 w200 h15 cWhite, • леккаш
-Gui, Add, Text, x2 x71 y155 w215 h15 cFD7B7C, — кашель
-Gui, Add, Text, x2 x20 y170 w200 h15 cWhite, • лекорг
-Gui, Add, Text, x2 x69 y170 w215 h15 cFD7B7C, — организм
-Gui, Add, Text, x2 x20 y185 w200 h15 cWhite, • лекскелет
-Gui, Add, Text, x2 x82 y185 w215 h15 cFD7B7C, — скелет человека
-Gui, Add, Text, x2 x20 y200 w200 h15 cWhite, • леклей
-Gui, Add, Text, x2 x67 y200 w215 h15 cFD7B7C, — лейкоциты
-Gui, Add, Text, x2 x20 y215 w200 h15 cWhite, • лексон
-Gui, Add, Text, x2 x67 y215 w215 h15 cFD7B7C, — сон
-Gui, Add, Text, x2 x20 y230 w200 h15 cWhite, • лекпеч
-Gui, Add, Text, x2 x67 y230 w215 h15 cFD7B7C, — печень
-Gui, Add, Text, x2 x20 y245 w200 h15 cWhite, • лекмаз
-Gui, Add, Text, x2 x67 y245 w215 h15 cFD7B7C, — появление мазолей
-Gui, Add, Text, x2 x20 y260 w200 h15 cWhite, • леккамн
-Gui, Add, Text, x2 x73 y260 w215 h15 cFD7B7C, — появление камней в почках
-Gui, Add, Text, x2 x20 y275 w200 h15 cWhite, • лекволос
-Gui, Add, Text, x2 x79 y275 w215 h15 cFD7B7C, — волосы на теле
-Gui, Add, Text, x2 x20 y290 w200 h15 cWhite, • лекпатр
-Gui, Add, Text, x2 x73 y290 w215 h15 cFD7B7C, — патрулирование
-Gui, Add, Text, x2 x20 y305 w200 h15 cWhite, • лекпост
-Gui, Add, Text, x2 x74 y305 w215 h15 cFD7B7C, — дежурство на посту
-Gui, Add, Text, x2 x20 y320 w200 h15 cWhite, • лекверт
-Gui, Add, Text, x2 x73 y320 w215 h15 cFD7B7C, — мед. вертолет
-Gui, Add, Text, x2 x20 y335 w200 h15 cWhite, • лекпуп
-Gui, Add, Text, x2 x67 y335 w215 h15 cFD7B7C, — пупок
-Gui, Add, Text, x2 x20 y350 w200 h15 cWhite, • лекнар
-Gui, Add, Text, x2 x67 y350 w215 h15 cFD7B7C, — наркотики
-Gui, Add, Text, x2 x20 y365 w200 h15 cWhite, • лексос
-Gui, Add, Text, x2 x67 y365 w215 h15 cFD7B7C, — кровеносные сосуды
-Gui, Add, Text, x2 x20 y380 w200 h15 cWhite, • лексер
-Gui, Add, Text, x2 x67 y380 w215 h15 cFD7B7C, — сердце
-Gui, Add, Text, x2 x20 y395 w200 h15 cWhite, • леквыз
-Gui, Add, Text, x2 x67 y395 w215 h15 cFD7B7C, — обработка вызова
-Gui, Add, Text, x2 x20 y410 w200 h15 cWhite, • лекаллерг
-Gui, Add, Text, x2 x84 y410 w215 h15 cFD7B7C, — аллергия
-
-Gui, 1:Tab, 2
-Gui 1: Font, s12 cWhite Bold, Gilroy
-Gui 1:Add, GroupBox, x10 y430 w292 h140 cFD7B7C, [ практические ]
-Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x2 x20 y455 w222 h15 cFD7B7C, • лекпмпв
-Gui, Add, Text, x2 x71 y455 w215 h15 cWhite, — пмп при вывихе
-Gui, Add, Text, x2 x20 y470 w222 h15 cFD7B7C, • лекпмппог
-Gui, Add, Text, x2 x84 y470 w215 h15 cWhite, — пмп при огнестреле
-Gui, Add, Text, x2 x20 y485 w222 h15 cFD7B7C, • лекпмпоб
-Gui, Add, Text, x2 x83 y485 w215 h15 cWhite, — пмп при обмороке
-Gui, Add, Text, x2 x20 y500 w222 h15 cFD7B7C, • лекпмппер
-Gui, Add, Text, x2 x85 y500 w215 h15 cWhite, — пмп при переломе
-Gui, Add, Text, x2 x20 y515 w222 h15 cFD7B7C, • лекпмпож
-Gui, Add, Text, x2 x83 y515 w215 h15 cWhite, — пмп при ожоге
-Gui, Add, Text, x2 x20 y530 w222 h15 cFD7B7C, • лекпмпкр
-Gui, Add, Text, x2 x81 y530 w215 h15 cWhite, — пмп при кровотеч.
-Gui, Add, Text, x2 x20 y545 w222 h15 cFD7B7C, • лекпмпотр
-Gui, Add, Text, x2 x83 y545 w215 h15 cWhite, — пмп при отравлении
-
-Gui, 1:Tab, 2
-Gui 1: Font, s12 cWhite Bold, Gilroy
-Gui 1:Add, GroupBox, x305 y40 w292 h370 cFD7B7C, [ теоретические | 2 ]
-Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x2 x315 y65 w222 h15 cWhite, • лекчих
-Gui, Add, Text, x2 x360 y65 w222 h15 cFD7B7C, — причины чихания
-Gui, Add, Text, x2 x315 y80 w222 h15 cWhite, • леккров
-Gui, Add, Text, x2 x367 y80 w150 h15 cFD7B7C, — кровь
-Gui, Add, Text, x2 x315 y95 w200 h15 cWhite, • лекгол
-Gui, Add, Text, x2 x360 y95 w215 h15 cFD7B7C, — головная боль
-Gui, Add, Text, x2 x315 y110 w200 h15 cWhite, • лекгли
-Gui, Add, Text, x2 x360 y110 w215 h15 cFD7B7C, — причины появ. глистов
-Gui, Add, Text, x2 x315 y125 w200 h15 cWhite, • леквес
-Gui, Add, Text, x2 x360 y125 w215 h15 cFD7B7C, — появ. веснушек
-Gui, Add, Text, x2 x315 y140 w200 h15 cWhite, • леккур
-Gui, Add, Text, x2 x364 y140 w215 h15 cFD7B7C, — курение
-Gui, Add, Text, x2 x315 y155 w200 h15 cWhite, • лексах
-Gui, Add, Text, x2 x360 y155 w215 h15 cFD7B7C, — сахарный диабет
-Gui, Add, Text, x2 x315 y170 w200 h15 cWhite, • лекдиар
-Gui, Add, Text, x2 x368 y170 w215 h15 cFD7B7C, — диарея
-Gui, Add, Text, x2 x315 y185 w200 h15 cWhite, • леккар
-Gui, Add, Text, x2 x365 y185 w215 h15 cFD7B7C, — кариес
-Gui, Add, Text, x2 x315 y200 w200 h15 cWhite, • лекбег
-Gui, Add, Text, x2 x358 y200 w215 h15 cFD7B7C, — бег
-Gui, Add, Text, x2 x315 y215 w200 h15 cWhite, • лекинф
-Gui, Add, Text, x2 x364 y215 w215 h15 cFD7B7C, — инфаркт
-Gui, Add, Text, x2 x315 y230 w200 h15 cWhite, • лекинс
-Gui, Add, Text, x2 x360 y230 w215 h15 cFD7B7C, — инсульт
-Gui, Add, Text, x2 x315 y245 w200 h15 cWhite, • лекзап
-Gui, Add, Text, x2 x360 y245 w215 h15 cFD7B7C, — запор
-Gui, Add, Text, x2 x315 y260 w200 h15 cWhite, • лекперелом
-Gui, Add, Text, x2 x387 y260 w200 h15 cFD7B7C, — перелом пальцев
-Gui, Add, Text, x2 x315 y275 w200 h15 cWhite, • лекрод
-Gui, Add, Text, x2 x365 y275 w215 h15 cFD7B7C, — появ. родинок
-Gui, Add, Text, x2 x315 y290 w200 h15 cWhite, • лекног
-Gui, Add, Text, x2 x360 y290 w215 h15 cFD7B7C, — ногти
-Gui, Add, Text, x2 x315 y305 w200 h15 cWhite, • леклег
-Gui, Add, Text, x2 x358 y305 w215 h15 cFD7B7C, — легкие
-Gui, Add, Text, x2 x315 y320 w200 h15 cWhite, • леквита
-Gui, Add, Text, x2 x367 y320 w215 h15 cFD7B7C, — витамины
-Gui, Add, Text, x2 x315 y335 w200 h15 cWhite, • лекалек
-Gui, Add, Text, x2 x367 y335 w215 h15 cFD7B7C, — алексия
-Gui, Add, Text, x2 x315 y350 w200 h15 cWhite, • лекдиаб
-Gui, Add, Text, x2 x369 y350 w215 h15 cFD7B7C, — диабет
-Gui, Add, Text, x2 x315 y365 w200 h15 cWhite, • леккат
-Gui, Add, Text, x2 x360 y365 w215 h15 cFD7B7C, — катаракта
-Gui, Add, Text, x2 x315 y380 w185 h15 cWhite, • лекосткров
-Gui, Add, Text, x2 x387 y380 w185 h15 cFD7B7C, — остановка крови
-
-Gui, 1:Tab, 2
-Gui 1: Font, s12 cWhite Bold, Gilroy
-Gui 1:Add, GroupBox, x305 y405 w292 h50 cFD7B7C, [ other ]
-Gui 1:Font, s8 White Bold, Gilory
-Gui, Add, Text, x2 x315 y430 w222 h15 cWhite, • леквст
-Gui, Add, Text, x2 x360 y430 w222 h15 cFD7B7C, — вступительная
-
-Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v%currentversion%
-
-;________________________________________________________________________________________________________________________________________________________________________________________
-
-Gui, 1:Tab, 3
+Gui, 1:Tab,2
 Gui 1: Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x10 y40 w320 h90 cFD7B7C, [ соло ]
+Gui 1:Font, s11 cWhite Bold, Gilroy
+Gui, Add, Button, x520 y10 w170 h30 gData, Данные сотрудника
 Gui 1:Font, s8 White Bold, Gilory
 Gui, Add, Text, x2 x20 y65 w222 h15 cFD7B7C, • п1
 Gui, Add, Text, x2 x39 y65 w222 h15 cwhite, — патруль города [ вертолет + карета ]
@@ -395,7 +251,7 @@ Gui, Add, Text, x2 x20 y260 w200 h15 cFD7B7C, • дежвч1
 Gui, Add, Text, x2 x69 y260 w215 h15 cwhite, — дежурство на ВЧ
 ;---
 
-Gui, 1:Tab, 3
+Gui, 1:Tab, 2
 Gui 1: Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x335 y40 w320 h90 cFD7B7C, [ с напарником ]
 Gui 1:Font, s8 White Bold, Gilory
@@ -421,7 +277,7 @@ Gui, Add, Text, x404 y245 w215 h15 cwhite, — дежурство в УВД-М
 Gui, Add, Text, x345 y260 w200 h15 cFD7B7C, • дежвчн1
 Gui, Add, Text, x399 y260 w215 h15 cwhite, — дежурство на ВЧ
 
-Gui, 1:Tab, 3
+Gui, 1:Tab, 2
 Gui 1: Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x10 y280 w645 h280 cFD7B7C, [ нумерация постов ]
 Gui 1:Font, s9 White Bold, Gilory
@@ -549,7 +405,143 @@ Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
 Gui, Add, Text, x10 y585 w111 h30 , v%currentversion%
 
-;-------------------------------- техничка -----------------------------------
+;________________________________________________________________________________________________________________________________________________________________________________________
+
+Gui, 1:Tab, 3
+Gui 1: Font, s12 cWhite Bold, Gilroy
+Gui 1:Add, GroupBox, x10 y40 w292 h395 cFD7B7C, [ теоретические | 1 ]
+Gui 1:Font, s11 cWhite Bold, Gilroy
+Gui, Add, Button, x520 y10 w170 h30 gData, Данные сотрудника
+Gui 1:Font, s8 White Bold, Gilory
+Gui, Add, Text, x2 x20 y65 w222 h15 cWhite, • лекдок
+Gui, Add, Text, x2 x69 y65 w222 h15 cFD7B7C, — уставные документы
+Gui, Add, Text, x2 x20 y80 w222 h15 cWhite, • лексуб
+Gui, Add, Text, x2 x66 y80 w150 h15 cFD7B7C, — субординация
+Gui, Add, Text, x2 x20 y95 w200 h15 cWhite, • лекрд
+Gui, Add, Text, x2 x63 y95 w215 h15 cFD7B7C, — рабочий день
+Gui, Add, Text, x2 x20 y110 w200 h15 cWhite, • лекрация
+Gui, Add, Text, x2 x79 y110 w215 h15 cFD7B7C, — рации больницы
+Gui, Add, Text, x2 x20 y125 w200 h15 cWhite, • лекксмп
+Gui, Add, Text, x2 x72 y125 w215 h15 cFD7B7C, — карета СМП
+Gui, Add, Text, x2 x20 y140 w200 h15 cWhite, • лексобес
+Gui, Add, Text, x2 x79 y140 w215 h15 cFD7B7C, — дежурство на собеседованиях
+Gui, Add, Text, x2 x20 y155 w200 h15 cWhite, • леккаш
+Gui, Add, Text, x2 x71 y155 w215 h15 cFD7B7C, — кашель
+Gui, Add, Text, x2 x20 y170 w200 h15 cWhite, • лекорг
+Gui, Add, Text, x2 x69 y170 w215 h15 cFD7B7C, — организм
+Gui, Add, Text, x2 x20 y185 w200 h15 cWhite, • лекскелет
+Gui, Add, Text, x2 x82 y185 w215 h15 cFD7B7C, — скелет человека
+Gui, Add, Text, x2 x20 y200 w200 h15 cWhite, • леклей
+Gui, Add, Text, x2 x67 y200 w215 h15 cFD7B7C, — лейкоциты
+Gui, Add, Text, x2 x20 y215 w200 h15 cWhite, • лексон
+Gui, Add, Text, x2 x67 y215 w215 h15 cFD7B7C, — сон
+Gui, Add, Text, x2 x20 y230 w200 h15 cWhite, • лекпеч
+Gui, Add, Text, x2 x67 y230 w215 h15 cFD7B7C, — печень
+Gui, Add, Text, x2 x20 y245 w200 h15 cWhite, • лекмаз
+Gui, Add, Text, x2 x67 y245 w215 h15 cFD7B7C, — появление мазолей
+Gui, Add, Text, x2 x20 y260 w200 h15 cWhite, • леккамн
+Gui, Add, Text, x2 x73 y260 w215 h15 cFD7B7C, — появление камней в почках
+Gui, Add, Text, x2 x20 y275 w200 h15 cWhite, • лекволос
+Gui, Add, Text, x2 x79 y275 w215 h15 cFD7B7C, — волосы на теле
+Gui, Add, Text, x2 x20 y290 w200 h15 cWhite, • лекпатр
+Gui, Add, Text, x2 x73 y290 w215 h15 cFD7B7C, — патрулирование
+Gui, Add, Text, x2 x20 y305 w200 h15 cWhite, • лекпост
+Gui, Add, Text, x2 x74 y305 w215 h15 cFD7B7C, — дежурство на посту
+Gui, Add, Text, x2 x20 y320 w200 h15 cWhite, • лекверт
+Gui, Add, Text, x2 x73 y320 w215 h15 cFD7B7C, — мед. вертолет
+Gui, Add, Text, x2 x20 y335 w200 h15 cWhite, • лекпуп
+Gui, Add, Text, x2 x67 y335 w215 h15 cFD7B7C, — пупок
+Gui, Add, Text, x2 x20 y350 w200 h15 cWhite, • лекнар
+Gui, Add, Text, x2 x67 y350 w215 h15 cFD7B7C, — наркотики
+Gui, Add, Text, x2 x20 y365 w200 h15 cWhite, • лексос
+Gui, Add, Text, x2 x67 y365 w215 h15 cFD7B7C, — кровеносные сосуды
+Gui, Add, Text, x2 x20 y380 w200 h15 cWhite, • лексер
+Gui, Add, Text, x2 x67 y380 w215 h15 cFD7B7C, — сердце
+Gui, Add, Text, x2 x20 y395 w200 h15 cWhite, • леквыз
+Gui, Add, Text, x2 x67 y395 w215 h15 cFD7B7C, — обработка вызова
+Gui, Add, Text, x2 x20 y410 w200 h15 cWhite, • лекаллерг
+Gui, Add, Text, x2 x84 y410 w215 h15 cFD7B7C, — аллергия
+
+Gui, 1:Tab, 3
+Gui 1: Font, s12 cWhite Bold, Gilroy
+Gui 1:Add, GroupBox, x10 y430 w292 h140 cFD7B7C, [ практические ]
+Gui 1:Font, s8 White Bold, Gilory
+Gui, Add, Text, x2 x20 y455 w222 h15 cFD7B7C, • лекпмпв
+Gui, Add, Text, x2 x71 y455 w215 h15 cWhite, — пмп при вывихе
+Gui, Add, Text, x2 x20 y470 w222 h15 cFD7B7C, • лекпмппог
+Gui, Add, Text, x2 x84 y470 w215 h15 cWhite, — пмп при огнестреле
+Gui, Add, Text, x2 x20 y485 w222 h15 cFD7B7C, • лекпмпоб
+Gui, Add, Text, x2 x83 y485 w215 h15 cWhite, — пмп при обмороке
+Gui, Add, Text, x2 x20 y500 w222 h15 cFD7B7C, • лекпмппер
+Gui, Add, Text, x2 x85 y500 w215 h15 cWhite, — пмп при переломе
+Gui, Add, Text, x2 x20 y515 w222 h15 cFD7B7C, • лекпмпож
+Gui, Add, Text, x2 x83 y515 w215 h15 cWhite, — пмп при ожоге
+Gui, Add, Text, x2 x20 y530 w222 h15 cFD7B7C, • лекпмпкр
+Gui, Add, Text, x2 x81 y530 w215 h15 cWhite, — пмп при кровотеч.
+Gui, Add, Text, x2 x20 y545 w222 h15 cFD7B7C, • лекпмпотр
+Gui, Add, Text, x2 x83 y545 w215 h15 cWhite, — пмп при отравлении
+
+Gui, 1:Tab, 3
+Gui 1: Font, s12 cWhite Bold, Gilroy
+Gui 1:Add, GroupBox, x305 y40 w292 h370 cFD7B7C, [ теоретические | 2 ]
+Gui 1:Font, s8 White Bold, Gilory
+Gui, Add, Text, x2 x315 y65 w222 h15 cWhite, • лекчих
+Gui, Add, Text, x2 x360 y65 w222 h15 cFD7B7C, — причины чихания
+Gui, Add, Text, x2 x315 y80 w222 h15 cWhite, • леккров
+Gui, Add, Text, x2 x367 y80 w150 h15 cFD7B7C, — кровь
+Gui, Add, Text, x2 x315 y95 w200 h15 cWhite, • лекгол
+Gui, Add, Text, x2 x360 y95 w215 h15 cFD7B7C, — головная боль
+Gui, Add, Text, x2 x315 y110 w200 h15 cWhite, • лекгли
+Gui, Add, Text, x2 x360 y110 w215 h15 cFD7B7C, — причины появ. глистов
+Gui, Add, Text, x2 x315 y125 w200 h15 cWhite, • леквес
+Gui, Add, Text, x2 x360 y125 w215 h15 cFD7B7C, — появ. веснушек
+Gui, Add, Text, x2 x315 y140 w200 h15 cWhite, • леккур
+Gui, Add, Text, x2 x364 y140 w215 h15 cFD7B7C, — курение
+Gui, Add, Text, x2 x315 y155 w200 h15 cWhite, • лексах
+Gui, Add, Text, x2 x360 y155 w215 h15 cFD7B7C, — сахарный диабет
+Gui, Add, Text, x2 x315 y170 w200 h15 cWhite, • лекдиар
+Gui, Add, Text, x2 x368 y170 w215 h15 cFD7B7C, — диарея
+Gui, Add, Text, x2 x315 y185 w200 h15 cWhite, • леккар
+Gui, Add, Text, x2 x365 y185 w215 h15 cFD7B7C, — кариес
+Gui, Add, Text, x2 x315 y200 w200 h15 cWhite, • лекбег
+Gui, Add, Text, x2 x358 y200 w215 h15 cFD7B7C, — бег
+Gui, Add, Text, x2 x315 y215 w200 h15 cWhite, • лекинф
+Gui, Add, Text, x2 x364 y215 w215 h15 cFD7B7C, — инфаркт
+Gui, Add, Text, x2 x315 y230 w200 h15 cWhite, • лекинс
+Gui, Add, Text, x2 x360 y230 w215 h15 cFD7B7C, — инсульт
+Gui, Add, Text, x2 x315 y245 w200 h15 cWhite, • лекзап
+Gui, Add, Text, x2 x360 y245 w215 h15 cFD7B7C, — запор
+Gui, Add, Text, x2 x315 y260 w200 h15 cWhite, • лекперелом
+Gui, Add, Text, x2 x387 y260 w200 h15 cFD7B7C, — перелом пальцев
+Gui, Add, Text, x2 x315 y275 w200 h15 cWhite, • лекрод
+Gui, Add, Text, x2 x365 y275 w215 h15 cFD7B7C, — появ. родинок
+Gui, Add, Text, x2 x315 y290 w200 h15 cWhite, • лекног
+Gui, Add, Text, x2 x360 y290 w215 h15 cFD7B7C, — ногти
+Gui, Add, Text, x2 x315 y305 w200 h15 cWhite, • леклег
+Gui, Add, Text, x2 x358 y305 w215 h15 cFD7B7C, — легкие
+Gui, Add, Text, x2 x315 y320 w200 h15 cWhite, • леквита
+Gui, Add, Text, x2 x367 y320 w215 h15 cFD7B7C, — витамины
+Gui, Add, Text, x2 x315 y335 w200 h15 cWhite, • лекалек
+Gui, Add, Text, x2 x367 y335 w215 h15 cFD7B7C, — алексия
+Gui, Add, Text, x2 x315 y350 w200 h15 cWhite, • лекдиаб
+Gui, Add, Text, x2 x369 y350 w215 h15 cFD7B7C, — диабет
+Gui, Add, Text, x2 x315 y365 w200 h15 cWhite, • леккат
+Gui, Add, Text, x2 x360 y365 w215 h15 cFD7B7C, — катаракта
+Gui, Add, Text, x2 x315 y380 w185 h15 cWhite, • лекосткров
+Gui, Add, Text, x2 x387 y380 w185 h15 cFD7B7C, — остановка крови
+
+Gui, 1:Tab, 3
+Gui 1: Font, s12 cWhite Bold, Gilroy
+Gui 1:Add, GroupBox, x305 y405 w292 h50 cFD7B7C, [ other ]
+Gui 1:Font, s8 White Bold, Gilory
+Gui, Add, Text, x2 x315 y430 w222 h15 cWhite, • леквст
+Gui, Add, Text, x2 x360 y430 w222 h15 cFD7B7C, — вступительная
+
+Gui 1:Font, s7 White Bold, Gilory
+Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
+Gui, Add, Text, x10 y585 w111 h30 , v%currentversion%
+
+;________________________________________________________________________________________________________________________________________________________________________________________
 
 LoadData()
 {
@@ -584,40 +576,9 @@ LoadData()
         Gender := "Мужской"
 }
 
-;------------------------------ settings ------------------------------------
+;________________________________________________________________________________________________________________________________________________________________________________________
 
 LoadData()
-
-SetSpecialSettings(gender)
-{
-    global lla, la, kca, kuce, syaas, kaci
-
-    if (gender == "Мужской" or gender == "Male") {
-        lla := "л"
-        la := ""
-        kca := "к"
-        kuce := "ку"
-        syaas := "ся"
-        kaci := "ка"
-        MsgBox, 64, Пол, Установлен мужской пол. Специальные настройки применены.
-    } else if (gender == "Женский" or gender == "Female") {
-        lla := "ла"
-        la := "ла"
-        kca := "ца"
-        kuce := "це"
-        syaas := "ась"
-        kaci := "цы"
-        MsgBox, 64, Пол, Установлен женский пол. Специальные настройки применены.
-    } else {
-        lla := ""
-        la := ""
-        kca := ""
-        kuce := ""
-        syaas := ""
-        kaci := ""
-        MsgBox, 48, Пол, Неизвестный пол. Специальные настройки не применены.
-    }
-}
 
 +f1::
 reload
@@ -640,20 +601,24 @@ Gui, Show, center w610 h512
 Gui, Font, S13  Cwhite Bold, Gilroy
 Gui, Add, Text, x10 y10 w300 h20 cFD7B7C, [ Данные сотрудника ]
 Gui, Font, S10  Cwhite Bold, Gilroy
-Gui, Add, DropDownList, x435 y10 w160 h220 cblack vCity, ЦГБ-П|ОКБ-М|ЦГБ-Н
+;Gui, Add, DropDownList, x435 y10 w160 h220 cblack vCity, ЦГБ-П|ОКБ-М|ЦГБ-Н
+Gui, Add, text, x330 y10 w160 h20, Город работы:
+Gui, Add, edit, x435 y10 w160 h20 cblack vCity, %City%
 Gui, Font, S9  Cwhite Bold, Gilroy
 Gui, Add, Text, x15 y40 w250 h20, ФИО | *МаКензи Герман Викторович*
-Gui, Add, Edit, x15 y60 w260 h24 cblack vFIO, %FIO%
+Gui, Add, Edit, x15 y60 w260 h20 cblack vFIO, %FIO%
 Gui, Add, Text, x285 y40 w300 h20, Занимаемая должность | *Врач-терапевт*
-Gui, Add, DropDownList, x285 y60 w200 h420 cblack vRang , Интерн|Фельдшер|Лаборант|Врач-стажер|Врач-участковый|Врач-терапевт|Врач-хирург|Заведующий отделением|Заместитель ГВ|Главный врач
+;Gui, Add, DropDownList, x285 y60 w200 h420 cblack vRang , Интерн|Фельдшер|Лаборант|Врач-стажер|Врач-участковый|Врач-терапевт|Врач-хирург|Заведующий отделением|Заместитель ГВ|Главный врач
+Gui, Add, edit, x285 y60 w200 h20 cblack vRang , %Rang%
 Gui, Add, Text, x15 y100 w160 h20, Используемый тег | *ОРИТ*
 Gui, Add, Edit, x15 y120 w165 h20 cblack vTag, %Tag%
 Gui, Add, Text, x190 y100 w400 h20, Введите Имя Фамилию напарника для докладов | *Ренат МаКензи*
 Gui, Add, Edit, x190 y120 w400 h20 cblack vPartners, %Partners%
 Gui, Add, Text, x375 y160 w450 h20, Введите номер поста (к примеру: 1)
-Gui, Add, Edit, x375 y180 w220 h24 cblack vPost, %Post%
+Gui, Add, Edit, x375 y180 w220 h20 cblack vPost, %Post%
 Gui, Add, Text, x15 y160 w600 h20, Выберите название фракции, на которой вы дежурите
-Gui, Add, DropDownList, x15 y180 w350 h220 cblack vFrac, РЖД|МО|УВД-П|УВД-М|УВД-Н|ГИБДД-П|ГИБДД-М|ГИБДД-Н
+;Gui, Add, DropDownList, x15 y180 w350 h220 cblack vFrac, РЖД|МО|УВД-П|УВД-М|УВД-Н|ГИБДД-П|ГИБДД-М|ГИБДД-Н
+Gui, Add, edit, x15 y180 w350 h20 cblack vFrac, %Frac%
 ; --
 Gui, Add, Text, x15 y220 w300 h20, Пол персонажа: [ функция не работоспособна ]
 Gui, Add, Radio, x15 y240 w100 h17 cwhite, Мужской
@@ -692,12 +657,11 @@ GetIniValue(Key) {
     IniRead, Value, %iniFile%, %Section%, %Key%
     return Value
 }
-; ----------------------------------------------------------------------------
-; ----------------------------------------------------------------------------
+
 IniWrite(Value, iniFile, Section, Key) {
   IniWrite, %Value%, %iniFile%, %Section%, %Key%
 }
-; ----------------------------------------------------------------------------
+;________________________________________________________________________________________________________________________________________________________________________________________
 
 link1:
 run, https://imgur.com/a/yrhyK1e
@@ -799,9 +763,7 @@ link6v:
 run, https://imgur.com/a/Oqp4vLV
 return
 
-
-
-; ------------------------------- общее -------------------------------
+;________________________________________________________________________________________________________________________________________________________________________________________
 
 ^1::
 SendMessage, 0x50,, 0x4190419,, A
@@ -830,25 +792,21 @@ return
 
 ^4::
 SendMessage, 0x50,, 0x4190419,, A
-sendplay {T}|
+sendplay {f8}
 sleep 122
-sendplay /do В медицинской сумке лежит необходимое лекарство, бланк выписки и ручка. {enter}
+SendPlay ^A{Delete}
+sleep 333
+sendplay do В медицинской сумке лежит необходимое лекарство, бланк выписки и ручка. {enter}
+sleep 111
+sendplay me открыв сумку, достал бланк и ручку, затем начал заполнять бланк {enter}
+sleep 111
+sendplay todo Возьмите, пожалуйста, бланк выписки и лекарство*заполнив бланк, затем достав лекарство и положив ручку в сумку {enter}
+sleep 111
+sendplay b Пропишите в обычном чате: /me взял лекарство{enter}{f8}
 sleep 111
 sendplay {T}
-sleep 111
-sendplay /me открыв сумку, достал бланк и ручку, затем начал заполнять бланк {enter}
-sleep 111
-sendplay {T}
-sleep 111
-sendplay /todo Возьмите, пожалуйста, бланк выписки и лекарство*заполнив бланк, затем достав лекарство и положив ручку в сумку {enter}
-sleep 111
-sendplay {T}
-sleep 111
-sendplay /b Пропиши в обычном чате: /me взял лекарство{enter}
-sleep 111
-sendplay {T}
-sleep 111
-sendplay {/}helpmed{space}
+sleep 222
+sendplay /helpmed{space}
 return
 
 ^5::
@@ -1187,7 +1145,7 @@ if(TryRes=="нет")||(TryRes=="ytn")||(TryRes=="НЕТ")||(TryRes=="YTN")
        blockinput, on
        SendPlay ^A{Delete}
        sleep 444
-       sendplay me подставив 2 пальца к задней стороне запястья пострадавшего, отсчитал количество ударов
+       sendplay me подставив 2 пальца к задней стороне запястья пострадавшего, отсчитал количество ударов {enter}
        sleep 333
        sendplay, do В медицинской сумке находятся необходимые препараты. {enter}
        sleep 500
