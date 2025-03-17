@@ -29,7 +29,7 @@ Gui, Show, center w700 h600, mz helper | by mck
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.6.1"
+currentVersion := "0.6.2"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -929,7 +929,7 @@ sleep 100
 sendplay {F8}
 sleep 100
        SendPlay ^A{Delete}
-       sleep 500
+       sleep 1111
 sendplay какой отчет желаете сделать? (принял | прибыл | увожу | отменен | ложный | обработан):{space}
 Input TryRes, V, {Enter}
 if(TryRes=="принял")||(TryRes=="пghbyzk")
@@ -1024,12 +1024,14 @@ sendplay {esc}
 sleep 100
 sendplay {F8}
 sleep 100
+SendPlay ^A{Delete}
+sleep 1111
 sendplay какой отчет желаете сделать? ( принял | прибыл | увожу |  отменен | ложный | обработан):{space}
 Input TryRes, V, {Enter}
 if(TryRes=="принял")||(TryRes=="пghbyzk")
  {
        SendPlay ^A{Delete}
-       sleep 100
+       sleep 444
        sendplay, do На поясе сотрудника висит рабочая рация. {enter}
        sleep 100
        sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
@@ -1045,7 +1047,7 @@ if(TryRes=="принял")||(TryRes=="пghbyzk")
 if(TryRes=="прибыл")||(TryRes=="ghb,sk")
    {
        SendPlay ^A{Delete}
-       sleep 120
+       sleep 444
        sendplay, do На поясе сотрудника висит рабочая рация. {enter}
        sleep 100
        sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
@@ -1059,7 +1061,7 @@ if(TryRes=="увожу")||(TryRes=="edj;e")
    {
        SendPlay ^A{Delete}
        blockinput, on
-       sleep 120
+       sleep 444
        sendplay, do На поясе сотрудника висит рабочая рация. {enter}
        sleep 100
        sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
@@ -1073,7 +1075,7 @@ if(TryRes=="увожу")||(TryRes=="edj;e")
 if(TryRes=="отменен")||(TryRes=="jnvtyty")
    {
        SendPlay ^A{Delete}
-       sleep 120
+       sleep 444
        sendplay, do На поясе сотрудника висит рабочая рация. {enter}
        sleep 100
        sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
@@ -1086,7 +1088,7 @@ if(TryRes=="отменен")||(TryRes=="jnvtyty")
 if(TryRes=="ложный")||(TryRes=="kj;ysq")
  {
        SendPlay ^A{Delete}
-       sleep 120
+       sleep 444
        sendplay, do На поясе сотрудника висит рабочая рация. {enter}
        sleep 100
        sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
@@ -1099,7 +1101,7 @@ if(TryRes=="ложный")||(TryRes=="kj;ysq")
 if(TryRes=="обработан")||(TryRes=="j,hf,jnfy")
  {
        SendPlay ^A{Delete}
-       sleep 120
+       sleep 444
        sendplay, do На поясе сотрудника висит рабочая рация. {enter}
        sleep 100
        sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
@@ -1127,7 +1129,7 @@ sleep 100
 sendplay {f8}
 sleep 150
 SendPlay ^A{Delete}
-sleep 150
+sleep 555
 sendplay, do Человек в сознании{?} {enter}
 sleep 100
 sendplay, b {/}do Да. | {/}do Нет. {enter}
@@ -1150,7 +1152,7 @@ if(TryRes=="нет")||(TryRes=="ytn")||(TryRes=="НЕТ")||(TryRes=="YTN")
    {
        blockinput, on
        SendPlay ^A{Delete}
-       sleep 444
+       sleep 555
        sendplay me подставив 2 пальца к задней стороне запястья пострадавшего, отсчитал количество ударов {enter}
        sleep 333
        sendplay, do В медицинской сумке находятся необходимые препараты. {enter}
@@ -1172,7 +1174,7 @@ if(TryRes=="нет")||(TryRes=="ytn")||(TryRes=="НЕТ")||(TryRes=="YTN")
         {
        sleep 122
        SendPlay ^A{Delete}
-       sleep 122
+       sleep 444
        sendplay, me дёрнув за рычаг, опустил каталку до нужного уровня{enter}
        sleep 111
        sendplay me напрягшись и схватившись за тело пациента, положил его на каталку{enter}
@@ -1184,7 +1186,7 @@ if(TryRes=="нет")||(TryRes=="ytn")||(TryRes=="НЕТ")||(TryRes=="YTN")
    {
        sleep 122
        SendPlay ^A{Delete}
-       sleep 122
+       sleep 444
        sendplay, me дёрнув за рычаг, опустил каталку до нужного уровня{enter}
        sleep 111
        sendplay me напрягшись и схватившись за тело пациента, положил его на каталку{enter}
@@ -1214,7 +1216,7 @@ SendMessage, 0x50,, 0x4190419,, A
 sendplay {f8}
 sleep 120
 sendplay ^A{Delete}
-sleep 122
+sleep 1111
 sendplay вертолет или карета (в | к):{space}
 Input TryRes, V, {enter}
 if(TryRes=="в")||(TryRes=="d")
@@ -1226,7 +1228,7 @@ Input TryRes, V, {enter}
 if(TryRes=="да")||(TryRes=="lf")
 {
 sendplay ^A{Delete}
-sleep 144
+sleep 444
 sendplay do На поясе сотрудника висит рабочая рация. {enter}
 sleep 120
 sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё, вызвав дежурного врача {enter}
@@ -1244,7 +1246,7 @@ sendplay {f12}
 if(TryRes=="нет")||(TryRes=="ytn")
 {
 sendplay ^A{Delete}
-sleep 144
+sleep 444
 sendplay do На поясе сотрудника висит рабочая рация. {enter}
 sleep 120
 sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё, вызвав дежурного врача {enter}
@@ -1269,7 +1271,7 @@ Input TryRes, V, {enter}
 if(TryRes=="да")||(TryRes=="lf")
 {
 sendplay ^A{Delete}
-sleep 144
+sleep 444
 sendplay do На поясе сотрудника висит рабочая рация. {enter}
 sleep 120
 sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё, вызвав дежурного врача {enter}
@@ -1287,7 +1289,7 @@ sendplay {f12}
 if(TryRes=="нет")||(TryRes=="ytn")
 {
 sendplay ^A{Delete}
-sleep 144
+sleep 444
 sendplay do На поясе сотрудника висит рабочая рация. {enter}
 sleep 120
 sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё, вызвав дежурного врача {enter}
