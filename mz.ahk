@@ -29,7 +29,7 @@ Gui, Show, center w700 h600, mz helper | by mck
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.6.2"
+currentVersion := "0.6.3"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -123,7 +123,8 @@ Gui 1:Add, Tab2, x10 y5 h40 w600 Buttons -Wrap, main|доклады|лекции
 Gui 1:Font, s11 cWhite Bold, Gilroy
 Gui, Add, Button, x520 y10 w170 h30 gData, Данные сотрудника
 Gui 1:Font, s12 cWhite Bold, Gilroy
-Gui 1:Add, GroupBox, x10 y40 w225 h185 ; рамка для границ между командами и биндами
+Gui 1:Add, GroupBox, x10 y40 w225 h75 ; рамка для границ
+Gui 1:Add, GroupBox, x10 y40 w225 h135 ; рамка для границ
 Gui 1:Add, GroupBox, x10 y40 w225 h270 cFD7B7C, [ общие ]
 Gui 1:Font, s8 White Bold, Gilory
 Gui, Add, Text, x2 x20 y65 w111 h15 cWhite, • смена1
@@ -132,19 +133,24 @@ Gui, Add, Text, x2 x20 y80 w150 h15 cWhite, • смена2
 Gui, Add, Text, x2 x67 y80 w150 h15 cFD7B7C, — доклад о сдаче смены
 Gui, Add, Text, x2 x20 y95 w150 h15 cWhite, • рация1
 Gui, Add, Text, x2 x68 y95 w150 h15 cFD7B7C, — отыгровки + заготовка (тег)
-Gui, Add, Text, x2 x20 y110 w100 h15 cWhite, • медкарта1
-Gui, Add, Text, x2 x85 y110 w120 h15 cFD7B7C, — выдача мед. карты
 
-Gui, Add, Text, x2 x20 y230 w111 h15 cWhite, • ctrl + 1
-Gui, Add, Text, x2 x65 y230 w150 h15 cFD7B7C, — приветствие
-Gui, Add, Text, x2 x20 y245 w150 h15 cWhite, • ctrl + 2
-Gui, Add, Text, x2 x65 y245 w150 h15 cFD7B7C, — фраза "чем могу помочь"
-Gui, Add, Text, x2 x20 y260 w150 h15 cWhite, • ctrl + 3
-Gui, Add, Text, x2 x65 y260 w150 h15 cFD7B7C, — фраза "выпишу вам миг"
-Gui, Add, Text, x2 x20 y275 w150 h15 cWhite, • ctrl + 4
-Gui, Add, Text, x2 x65 y275 w160 h15 cFD7B7C, — выдача лекарства
-Gui, Add, Text, x2 x20 y290 w150 h15 cWhite, • ctrl + 5
-Gui, Add, Text, x2 x65 y290 w160 h15 cFD7B7C, — самолечение
+Gui, Add, Text, x2 x20 y120 w100 h15 cWhite, • медкарта1
+Gui, Add, Text, x2 x85 y120 w120 h15 cFD7B7C, — вводная часть выдачи
+Gui, Add, Text, x2 x20 y135 w100 h15 cWhite, • медпсих1
+Gui, Add, Text, x2 x79 y135 w120 h15 cFD7B7C, — проверка псих. состояния
+Gui, Add, Text, x2 x20 y150 w100 h15 cWhite, • медфиз1
+Gui, Add, Text, x2 x73 y150 w150 h15 cFD7B7C, — проверка физ. состояния
+
+Gui, Add, Text, x2 x20 y180 w111 h15 cWhite, • ctrl + 1
+Gui, Add, Text, x2 x65 y180 w150 h15 cFD7B7C, — приветствие
+Gui, Add, Text, x2 x20 y195 w150 h15 cWhite, • ctrl + 2
+Gui, Add, Text, x2 x65 y195 w150 h15 cFD7B7C, — фраза "чем могу помочь"
+Gui, Add, Text, x2 x20 y210 w150 h15 cWhite, • ctrl + 3
+Gui, Add, Text, x2 x65 y210 w150 h15 cFD7B7C, — фраза "выпишу вам миг"
+Gui, Add, Text, x2 x20 y225 w150 h15 cWhite, • ctrl + 4
+Gui, Add, Text, x2 x65 y225 w160 h15 cFD7B7C, — выдача лекарства
+Gui, Add, Text, x2 x20 y240 w150 h15 cWhite, • ctrl + 5
+Gui, Add, Text, x2 x65 y240 w160 h15 cFD7B7C, — самолечение
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x237 y40 w455 h138 cFD7B7C, [ вызов ]
