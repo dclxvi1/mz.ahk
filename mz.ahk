@@ -20,16 +20,18 @@ if not A_IsAdmin
     ExitApp 
 }
 
-global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , Gender :="", FIO :="", Rang :=""
+global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :="", Rang :="" , Disc := ""
+Global  EditProvPath
+
 CheckUIA()
 Gui, Color, 202127
-Gui, Show, center w700 h600, mz helper | by mck
+Gui, Show, center w700 h600, mz helper
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.6.3"
+currentVersion := "0.7"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -86,6 +88,16 @@ CheckForUpdates()
 ;________________________________________________________________________________________________________________________________________________________________________________________
 folderPath := "C:\Program Files\mz.ahk"
 iniFile := folderPath "\settings.ini"
+ServerAddress := "185.71.66.70:22003"
+
+IniWrite(Value, iniFile, Section, Key) {
+  IniWrite, %Value%, %iniFile%, %Section%, %Key%
+}
+
+GetIniValue(Key) {
+    IniRead, Value, %iniFile%, %Section%, %Key%
+    return Value
+}
 
 EnsureFolderExists() {
     global folderPath
@@ -122,6 +134,8 @@ Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, Tab2, x10 y5 h40 w600 Buttons -Wrap, main|доклады|лекции
 Gui 1:Font, s11 cWhite Bold, Gilroy
 Gui, Add, Button, x520 y10 w170 h30 gData, Данные сотрудника
+Gui, Add, Button, x375 y10 w140 h30 gUseLink, Полезные ссылки
+Gui, Add, Button, x237 y470 w455 h30 grungame, Запуск игры [ укажите диск, на котором установлена игра ]
 Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x10 y40 w225 h75 ; рамка для границ
 Gui 1:Add, GroupBox, x10 y40 w225 h135 ; рамка для границ
@@ -132,12 +146,12 @@ Gui, Add, Text, x2 x67 y65 w150 h15 cFD7B7C, — fracvoice 2 + доклады
 Gui, Add, Text, x2 x20 y80 w150 h15 cWhite, • смена2
 Gui, Add, Text, x2 x67 y80 w150 h15 cFD7B7C, — доклад о сдаче смены
 Gui, Add, Text, x2 x20 y95 w150 h15 cWhite, • рация1
-Gui, Add, Text, x2 x68 y95 w150 h15 cFD7B7C, — отыгровки + заготовка (тег)
+Gui, Add, Text, x2 x68 y95 w150 h15 cFD7B7C, — исп. раций ( r | ro | d )
 
 Gui, Add, Text, x2 x20 y120 w100 h15 cWhite, • медкарта1
 Gui, Add, Text, x2 x85 y120 w120 h15 cFD7B7C, — вводная часть выдачи
 Gui, Add, Text, x2 x20 y135 w100 h15 cWhite, • медпсих1
-Gui, Add, Text, x2 x79 y135 w120 h15 cFD7B7C, — проверка псих. состояния
+Gui, Add, Text, x2 x78 y135 w155 h15 cFD7B7C, — проверка псих. состояния
 Gui, Add, Text, x2 x20 y150 w100 h15 cWhite, • медфиз1
 Gui, Add, Text, x2 x73 y150 w150 h15 cFD7B7C, — проверка физ. состояния
 
@@ -216,16 +230,28 @@ Gui, 1:Add, Text, x247 y300 h20 w280 cFD7B7C, ПСЖ
 Gui, 1:Add, Text, x275 y300 h20 w200, - по собственному желанию
 
 Gui, 1:Font, S12 Cwhite Bold, Gilroy
-Gui, 1:Add, GroupBox, x237 y322 w455 h70 cFD7B7C, [ гор. клавиши ]
+Gui, 1:Add, GroupBox, x237 y322 w455 h90 cFD7B7C, [ График выдачи мед.карт и проведения собес. ]
 Gui, 1:Font, S8 Cwhite Bold, Gilroy
-Gui, 1:Add, Text, x247 y345 h20 w280 cFD7B7C, shift + f1
-Gui, 1:Add, Text, x295 y345 h20 w180, - для перезапуска скрипта
-Gui, 1:Add, Text, x247 y360 h20 w280 cFD7B7C, shift + f2
-Gui, 1:Add, Text, x295 y360 h20 w180, - для остановки скрипта
+Gui, 1:Add, Text, x247 y345 h20 w280 cdf4a39, ЦГБ-П
+Gui, 1:Add, Text, x282 y345 h20 w180, - Понедельник | Четверг
+Gui, 1:Add, Text, x247 y360 h20 w280 c90c4ec, ОКБ-М
+Gui, 1:Add, Text, x287 y360 h20 w180, - Вторник | Пятница
+Gui, 1:Add, Text, x247 y375 h20 w280 c4dcb6d, ЦГБ-Н
+Gui, 1:Add, Text, x282 y375 h20 w180, - Среда | Суббота
+Gui, 1:Add, Text, x247 y390 h20 w280 cf1c232, Общий день
+Gui, 1:Add, Text, x315 y390 h20 w180, - Воскресенье
+
+Gui, 1:Font, S12 Cwhite Bold, Gilroy
+Gui, 1:Add, GroupBox, x237 y407 w455 h60 cFD7B7C, [ гор. клавиши ]
+Gui, 1:Font, S8 Cwhite Bold, Gilroy
+Gui, 1:Add, Text, x247 y430 h20 w280 cFD7B7C, shift + f1
+Gui, 1:Add, Text, x295 y430 h20 w180, - для перезапуска скрипта
+Gui, 1:Add, Text, x247 y445 h20 w280 cFD7B7C, shift + f2
+Gui, 1:Add, Text, x295 y445 h20 w180, - для остановки скрипта
 
 Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v%currentversion%
+Gui, Add, Text, x610 y585 w999 h30 , by German_McKenzy
+Gui, Add, Text, x5 y585 w111 h30 , v%currentversion%
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -234,6 +260,7 @@ Gui 1: Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x10 y40 w320 h90 cFD7B7C, [ соло ]
 Gui 1:Font, s11 cWhite Bold, Gilroy
 Gui, Add, Button, x520 y10 w170 h30 gData, Данные сотрудника
+Gui, Add, Button, x375 y10 w140 h30 gUseLink, Полезные ссылки
 Gui 1:Font, s8 White Bold, Gilory
 Gui, Add, Text, x2 x20 y65 w222 h15 cFD7B7C, • п1
 Gui, Add, Text, x2 x39 y65 w222 h15 cwhite, — патруль города [ вертолет + карета ]
@@ -406,8 +433,8 @@ Gui, Add, Text, x533 y535 w100 h15 cFD7B7C glink6v, [ кликабельно ]
 Gui 1:Add, GroupBox, x348 y448 w307 h112 cFD7B7C
 
 Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v%currentversion%
+Gui, Add, Text, x610 y585 w999 h30 , by German_McKenzy
+Gui, Add, Text, x5 y585 w111 h30 , v%currentversion%
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -416,6 +443,7 @@ Gui 1: Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x10 y40 w292 h395 cFD7B7C, [ теоретические | 1 ]
 Gui 1:Font, s11 cWhite Bold, Gilroy
 Gui, Add, Button, x520 y10 w170 h30 gData, Данные сотрудника
+Gui, Add, Button, x375 y10 w140 h30 gUseLink, Полезные ссылки
 Gui 1:Font, s8 White Bold, Gilory
 Gui, Add, Text, x2 x20 y65 w222 h15 cWhite, • лекдок
 Gui, Add, Text, x2 x69 y65 w222 h15 cFD7B7C, — уставные документы
@@ -542,14 +570,14 @@ Gui, Add, Text, x2 x315 y430 w222 h15 cWhite, • леквст
 Gui, Add, Text, x2 x360 y430 w222 h15 cFD7B7C, — вступительная
 
 Gui 1:Font, s7 White Bold, Gilory
-Gui, Add, Text, x279 y585 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y585 w111 h30 , v%currentversion%
+Gui, Add, Text, x610 y585 w999 h30 , by German_McKenzy
+Gui, Add, Text, x5 y585 w111 h30 , v%currentversion%
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
 LoadData()
 {
-    global Tag, Partners, City, Post, Frac, Gender , iniFile , FIO , Rang
+    global Tag, Partners, City, Post, Frac, iniFile , FIO , Ran , Disc
     if (FileExist(iniFile))
     {
         FileRead, FileContent, %iniFile%
@@ -568,16 +596,14 @@ LoadData()
                 Post := Value
             else if (Var = "Frac")
                 Frac := Value
-            else if (Var = "Gender")
-                Gender := Value
             else if (Var = "FIO")
                 FIO := Value
             else if (Var = "Rang")
                 Rang := Value
+            else if (Var = "Disc")
+                Disc := Value
         }
     }
-    if (Gender = "")
-        Gender := "Мужской"
 }
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
@@ -593,12 +619,16 @@ ExitApp
 +f2::
 Pause
 
+Global City := "ЦГБ-П|ОКБ-М|ЦГБ-Н"
+
 IniRead(Section, Key, Default = "") {
   IniRead, OutputVar, %iniFile%, %Section%, %Key%, %Default%
   return OutputVar
 }
 
-Global City := "ЦГБ-П|ОКБ-М|ЦГБ-Н"
+SetIniValue(Key, Value) {
+    IniWrite, %Value%, %iniFile%, %Section%, %Key%
+}
 
 Data:
 Gui, NewWindow: New, , data
@@ -633,20 +663,47 @@ Gui, Add, Text, x15 y160 w600 h20, Введите название фракци�
 ;Gui, Add, DropDownList, x15 y180 w350 h220 cblack vFrac, РЖД|МО|УВД-П|УВД-М|УВД-Н|ГИБДД-П|ГИБДД-М|ГИБДД-Н
 Gui, Add, edit, x15 y180 w350 h20 cblack vFrac, %Frac%
 
-Gui, Add, Text, x15 y220 w300 h20, Пол персонажа: [ функция не работоспособна ]
+Gui, Add, Text, x15 y220 w200 h20, Пол персонажа: [ не работает ]
 Gui, Add, Radio, x15 y240 w100 h17 cwhite, Мужской
 Gui, Add, Radio, x115 y240 w100 h17 cwhite, Женский
 
 Gui, Add, Button, x15 y270 w200 h30 gSaveData, Сохранить
 ;Gui, Add, Button, x222 y270 w200 h30 gReset, Сбросить
 
+Gui, add, text, x240 y220 w700 h20, Укажите диск, на котором установлена MTA Province: D / E / C
+Gui, Add, edit, x240 y240 w30 h30 r1 vDisc cblack limit1, %Disc%
 
 Gui Font, s7 White Bold, Gilory
-Gui, Add, Text, x188 y500 w999 h30 , by German_McKenzy | создатель не несет ответственности за последствия использования скрипта
-Gui, Add, Text, x10 y500 w111 h30 , v%currentversion%
+Gui, Add, Text, x520 y500 w999 h30 , by German_McKenzy
+Gui, Add, Text, x5 y500 w111 h30, v%currentversion%
 
     Gui, NewWindow:Show, , mz.ahk by mck
 return
+;-----------------------------------------------------------------------------
+
+rungame:
+    If (Disc = "")
+    {
+        MsgBox, 16, Ошибка, Пожалуйста, выберите диск.
+        Return
+    }
+
+    GameExe := Disc ":\Province Games\Multi Theft Auto.exe"
+ ;GameExe := ProvPath "\Multi Theft Auto.exe"
+
+    If (!FileExist(GameExe))
+    {
+        MsgBox, 16, Ошибка, Не найден исполняемый файл "%GameExe%".  Проверьте правильность выбранного диска.
+        Return
+    }
+
+ Run, "%GameExe%" mtasa://%ServerAddress%, UseErrorLevelу
+
+    If ErrorLevel
+    {
+        MsgBox, 16, Ошибка запуска, Не удалось запустить игру. Код ошибки: %ErrorLevel%
+    }
+Return
 
 SaveData:
     Gui, Submit, NoHide
@@ -658,21 +715,12 @@ SaveData:
         City: %City%`n
         Post: %Post%`n
         Frac: %Frac%`n
-        Gender: %Gender%`n  
         FIO: %FIO%`n  
         Rang: %Rang%`n  
+        Disc: %Disc%`n  
     ), %iniFile%
     MsgBox, 64, Сохранено, Данные успешно сохранены в файл: %iniFile% .
 Return
-
-GetIniValue(Key) {
-    IniRead, Value, %iniFile%, %Section%, %Key%
-    return Value
-}
-
-IniWrite(Value, iniFile, Section, Key) {
-  IniWrite, %Value%, %iniFile%, %Section%, %Key%
-}
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
 link1:
@@ -775,6 +823,105 @@ link6v:
 run, https://imgur.com/a/Oqp4vLV
 return
 
+;________________________________________________________________________________________________________________________________________________________________________________________
+
+UseLink:
+Gui, NewWindow: New, , Полезные ссылки
+Gui, Color, 202127 
+Gui, Show, center w415 h400
+Gui, Font, S14  Cwhite Bold, Gilroy
+Gui, Add, Text, x33 y8 w555 h24, [ Кнопки ведут на вкладки в браузере ]
+Gui, Font, S12  Cwhite Bold, Gilroy
+Gui, Add, groupbox, x5 y40 w200 h220 cFD7B7C, [ МинЗдрав ]
+Gui, Font, S10  Cwhite Bold, Gilroy
+Gui, Add, Button, x13 y70 w185 h20 gmzforum, МЗ [ общее ]
+Gui, Add, Button, x13 y95 w185 h20 gpomz, ПоМЗ [ документ ]
+Gui, Add, Button, x13 y120 w185 h20 ginfo, ИнфоРаздел [ FAQ ]
+Gui, Add, Button, x13 y145 w185 h20 grosmp, РОСМП [ документ ]
+Gui, Add, Button, x13 y170 w185 h20 gballsys, Балльная система [ INFO ]
+Gui, Add, Button, x13 y195 w185 h20 gmzvk, Группа МЗ в VK [ NEWS ]
+Gui, Add, Button, x13 y220 w185 h20 gcalk, Калькулятор баллов [ RES ]
+
+Gui, Font, S12  Cwhite Bold, Gilroy
+Gui, Add, groupbox, x210 y40 w200 h220 cFD7B7C, [ Обще-фракцион. ]
+Gui, Font, S10  Cwhite Bold, Gilroy
+Gui, Add, Button, x218 y70 w185 h20 gpdsf, ПдСФ [ документ ]
+Gui, Add, Button, x218 y95 w185 h20 gpdfr, ПдФР [ документ для 7-10 ]
+Gui, Add, Button, x218 y120 w185 h20 gcalend, График работы [ календарь ]
+Gui, Add, Button, x218 y145 w185 h20 gperevod, Правила переводов [ FAQ ]
+Gui, Add, Button, x218 y170 w185 h20 gochs, ОЧС [ INFO ]
+Gui, Add, Button, x218 y195 w185 h20 gnovost, Новости фрак. [ NEWS ]
+
+Gui, Font, S12  Cwhite Bold, Gilroy
+Gui, Add, groupbox, x5 y255 w405 h85 cFD7B7C, [ mz.ahk ]
+Gui, Font, S10  Cwhite Bold, Gilroy
+Gui, Add, Button, x13 y285 w390 h20 gahkvk, Беседа в VK [ новости об обновлениях | тех. поддержка ]
+Gui, Add, Button, x13 y310 w390 h20 ginst, Инструкция [ скачивание | установка | запуск ]
+
+Gui Font, s7 White Bold, Gilory
+Gui, Add, Text, x325 y388 w999 h30 , by German_McKenzy
+Gui, Add, Text, x5 y388 w111 h30 , v%currentversion%
+return
+
+mzforum:
+run, https://forum.gtaprovince.ru/forum/68-ministerstvo-zdravoohraneniya/
+return
+
+pomz:
+run, https://forum.gtaprovince.ru/topic/909573-pomz-polozhenie-o-ministerstve-zdravoohraneniya/
+return
+
+info:
+run, https://forum.gtaprovince.ru/topic/907584-informacionnyy-razdel/
+return
+
+rosmp:
+run, https://forum.gtaprovince.ru/topic/907537-reglament-okazaniya-skoroy-medicinskoy-pomoschi/
+return
+
+ballsys:
+run, https://forum.gtaprovince.ru/topic/907247-edinaya-ballnaya-sistema-mz/
+return
+
+pdsf:
+run, https://forum.gtaprovince.ru/topic/841868-pravila-dlya-sotrudnikov-frakciy-pdsf/
+return
+
+pdfr:
+run, https://forum.gtaprovince.ru/topic/841870-pravila-dlya-frakcionnogo-rukovodstva-pdfr/
+return
+
+calend:
+run, https://forum.gtaprovince.ru/topic/895035-proizvodstvennyy-kalendar-na-2025-god/
+return
+
+perevod:
+run, https://forum.gtaprovince.ru/topic/842753-pravila-perevoda-i-vosstanovleniya-sotrudnikov/
+return
+
+ochs:
+run, https://gtajournal.online/fbl
+return
+
+novost:
+run, https://vk.com/2province_frac
+return
+
+mzvk:
+run, https://vk.com/mz_server02
+return
+
+calk:
+run, https://vk.cc/cJC9Pr
+return
+
+ahkvk:
+run, https://vk.me/join/E6QeXGryXUyS9pF8OWJTyZiH7lYXfWv_eQs=
+return
+
+inst:
+run, https://telegra.ph/Instrukciya-po-ustanovke-i-ispolzovaniyu-AHK-03-11
+return
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
 ^1::
