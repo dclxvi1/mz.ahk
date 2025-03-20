@@ -23,18 +23,43 @@ if not A_IsAdmin
 global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :="", Rang :="" , Disc := ""
 Global  EditProvPath
 
+icoURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ico"
+icoPath := folderPath "\mz.ico"
+testFile := folderPath "\test.tmp"
+try
+{
+    FileAppend, Тест прав доступа, %testFile%
+    FileDelete, %testFile%
+}
+catch
+{
+    MsgBox, 16, Ошибка, Нет прав на запись в папку: %folderPath%. Запустите скрипт от имени администратора.
+    ExitApp
+}
+
+URLDownloadToFile, %icoURL%, %icoPath%
+if ErrorLevel
+{
+    MsgBox, 16, Ошибка, Не удалось загрузить иконку. Код ошибки: %ErrorLevel%
+}
+
+pathicon := "C:\Program Files\mz.ahk\mz.ico"
+Menu, Tray, Icon, %pathicon%
+
 CheckUIA()
 Gui, Color, 202127
 Gui, Show, center w700 h600, mz helper
+
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.7"
+currentVersion := "0.7.2"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
+
 CheckForUpdates() {
     global currentVersion, githubVersionURL, githubScriptURL, githubChangelogURL, scriptPath, scriptDir, scriptName
     whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
@@ -99,6 +124,7 @@ GetIniValue(Key) {
     return Value
 }
 
+
 EnsureFolderExists() {
     global folderPath
     if !FileExist(folderPath)
@@ -129,6 +155,7 @@ ExitApp
 }
 
 ;________________________________________________________________________________________________________________________________________________________________________________________
+
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, Tab2, x10 y5 h40 w600 Buttons -Wrap, main|доклады|лекции
@@ -923,7 +950,6 @@ inst:
 run, https://telegra.ph/Instrukciya-po-ustanovke-i-ispolzovaniyu-AHK-03-11
 return
 ;________________________________________________________________________________________________________________________________________________________________________________________
-
 ^1::
 SendMessage, 0x50,, 0x4190419,, A
 sendplay {T}|
