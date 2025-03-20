@@ -23,8 +23,8 @@ if not A_IsAdmin
 global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :="", Rang :="" , Disc := "" , Colors := ""
 ;________________________________________________________________________________________________________________________________________________________________________________________
 folderPath := "C:\Program Files\mz.ahk"
-icoURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ico"
-icoPath := folderPath "\mz.ico"
+icoURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/helper.ico"
+icoPath := folderPath "\helper.ico"
 testFile := folderPath "\test.tmp"
 try
 {
@@ -46,7 +46,7 @@ if ErrorLevel
     MsgBox, 16, Ошибка, Не удалось загрузить иконку. Код ошибки: %ErrorLevel%
 }
 }
-pathicon := "C:\Program Files\mz.ahk\mz.ico"
+pathicon := "C:\Program Files\mz.ahk\helper.ico"
 Menu, Tray, Icon, %pathicon%
 
 CheckUIA()
@@ -58,7 +58,7 @@ Gui, Show, center w710 h600, mz helper
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.8.1"
+currentVersion := "0.8.2"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -751,14 +751,14 @@ Gui, Add, Text, x20 y525 w102 h15 c%Colors%, Предупреждение
 Gui, Add, Text, x93 y525 w102 h15 cwhite, —  набрать 40 баллов;
 Gui, Add, Text, x20 y535 w102 h15 c%Colors%, Выговор
 Gui, Add, Text, x60 y535 w102 h15 cwhite, —  набрать 50 баллов;
-Gui, Add, Text, x20 y545 w142 h15 c%Colors%, Строгого выговора
+Gui, Add, Text, x20 y545 w142 h15 c%Colors%, Строгий выговор
 Gui, Add, Text, x107 y545 w102 h15 cwhite, —  набрать 75 баллов;
 
 Gui, Add, Text, x370 y525 w102 h15 c%Colors%, Предупреждение
 Gui, Add, Text, x443 y525 w102 h15 cwhite, —  набрать 55 баллов;
 Gui, Add, Text, x370 y535 w102 h15 c%Colors%, Выговор
 Gui, Add, Text, x410 y535 w102 h15 cwhite, —  набрать 70 баллов;
-Gui, Add, Text, x370 y545 w142 h15 c%Colors%, Строгого выговора
+Gui, Add, Text, x370 y545 w142 h15 c%Colors%, Строгий выговор
 Gui, Add, Text, x457 y545 w102 h15 cwhite, —  набрать 90 баллов;
 
 Gui 1:Font, s7 White Bold, Gilory
@@ -922,7 +922,7 @@ Gui Font, s7 White Bold, Gilory
 Gui, Add, Text, x520 y500 w999 h30 , by German_McKenzy
 Gui, Add, Text, x5 y500 w111 h30, v%currentversion%
 
-    Gui, NewWindow:Show, , mz helper
+    Gui, NewWindow:Show, , mz.ahk by mck
 return
 ;-----------------------------------------------------------------------------
 
