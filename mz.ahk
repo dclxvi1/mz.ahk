@@ -21,8 +21,8 @@ if not A_IsAdmin
 }
 
 global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :="", Rang :="" , Disc := ""
-Global  EditProvPath
 
+folderPath := "C:\Program Files\mz.ahk"
 icoURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ico"
 icoPath := folderPath "\mz.ico"
 testFile := folderPath "\test.tmp"
@@ -55,7 +55,7 @@ Gui, Show, center w700 h600, mz helper
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.7.2"
+currentVersion := "0.7.3"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
