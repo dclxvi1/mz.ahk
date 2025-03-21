@@ -26,7 +26,7 @@ global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.8.5"
+currentVersion := "0.8.6"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -620,9 +620,9 @@ Gui, Add, Text, x2 x125 y110 w61 h15 c%Colors%, — 1 балл
 Gui, Add, Text, x20 y125 w292 h20 cWhite, • Обработка вызова с последующей госпитализацией
 Gui, Add, Text, x312 y125 w61 h20 c%Colors%, — 3 балла*
 Gui, Add, Text, x20 y140 w292 h20 cWhite, • Обработка ложного вызова
-Gui, Add, Text, x180 y140 w61 h20 c%Colors%, — 1,5 балла*
+Gui, Add, Text, x180 y140 w69 h20 c%Colors%, — 1,5 балла*
 Gui, Add, Text, x20 y155 w292 h20 cWhite, • Обработка отмененного вызова
-Gui, Add, Text, x202 y155 w61 h20 c%Colors%, — 0,5 балла*
+Gui, Add, Text, x202 y155 w69 h20 c%Colors%, — 0,5 балла*
 Gui, Add, Text, x20 y170 w292 h20 cWhite, • Проведение мед. освидетельствования
 Gui, Add, Text, x237 y170 w61 h20 c%Colors%, — 2 балла
 Gui, Add, Text, x20 y185 w292 h20 cWhite, • Патрулирование в течение 10 минут на карете СМП
@@ -662,7 +662,7 @@ Gui, Add, Text, x275 y425 w61 h20 c%Colors%, — 3 балла
 Gui, Add, Text, x20 y440 w350 h20 cWhite, • Участие в Role Play мероприятии совместно с др. орг.
 Gui, Add, Text, x317 y440 w61 h20 c%Colors%, — 4 балла*
 Gui, Add, Text, x20 y455 w360 h20 cWhite, • Участие в Role Play мероприятии с привлечением гр. лиц
-Gui, Add, Text, x330 y455 w61 h20 c%Colors%, — 5 баллов*
+Gui, Add, Text, x330 y455 w69 h20 c%Colors%, — 5 баллов*
 Gui, Add, Text, x20 y470 w360 h20 cWhite, • Участие в глобальном мероприятии в качестве сотрудника
 Gui, Add, Text, x345 y470 w64 h20 c%Colors%, — 6 баллов*
 
@@ -910,11 +910,8 @@ GUI, add, groupbox, x-10 y-10 w999 h300
 Gui, Add, Button, x15 y450 w200 h30 gSaveData, Сохранить
 ;Gui, Add, Button, x222 y270 w200 h30 gReset, Сбросить
 
-Gui, add, text, x15 y300 w700 h20, Укажите диск, на котором установлена MTA Province: C/D/E...
-Gui, Add, edit, x15 y315 w20 h20 r1 vDisc cblack limit1, %Disc%
-
-Gui, add, text, x15 y340 w700 h20, Введите HEX-код для изменения цвета интерфейса
-Gui, Add, edit, x15 y355 w80 h20 r1 vColors cblack limit6, %Colors%
+Gui, add, text, x15 y300 w700 h20, Введите HEX-код для изменения цвета интерфейса
+Gui, Add, edit, x15 y315 w80 h20 r1 vColors cblack limit6, %Colors%
 
 Gui Font, s7 White Bold, Gilory
 Gui, Add, Text, x520 y500 w999 h30 , by German_McKenzy
@@ -923,30 +920,22 @@ Gui, Add, Text, x5 y500 w111 h30, v%currentversion%
     Gui, NewWindow:Show, , mz.ahk by mck
 return
 ;________________________________________________________________________________________________________________________________________________________________________________________
-
 rungame:
-    If (Disc = "")
-    {
-        MsgBox, 16, Ошибка, Пожалуйста, выберите диск.
-        Return
-    }
+RegRead, prov_path, HKEY_LOCAL_MACHINE, Software\WOW6432Node\Multi Theft Auto: Province All\1.6, Last Run Location
 
-    GameExe := Disc ":\Province Games\Multi Theft Auto.exe"
- ;GameExe := ProvPath "\Multi Theft Auto.exe"
-
-    If (!FileExist(GameExe))
-    {
-        MsgBox, 16, Ошибка, Не найден исполняемый файл "%GameExe%".  Проверьте правильность выбранного диска.
-        Return
-    }
-
- Run, "%GameExe%" mtasa://%ServerAddress%, UseErrorLevelу
-
-    If ErrorLevel
-    {
-        MsgBox, 16, Ошибка запуска, Не удалось запустить игру. Код ошибки: %ErrorLevel%
-    }
-Return
+if (prov_path = "")
+{
+    MsgBox, 16, Ошибка поиска пути, MTA Province не найдена
+}
+else
+{
+    prov_path := prov_path . "\Multi Theft Auto.exe"
+    ipadress := "185.71.66.70:22003"
+    cmdline := """" . prov_path . """ mtasa://" . ipadress
+    
+    Run, %cmdline%, , Hide
+}
+return
 
 SaveData:
     Gui, Submit, NoHide
