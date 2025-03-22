@@ -26,7 +26,7 @@ global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.8.6"
+currentVersion := "0.8.7"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -162,7 +162,7 @@ Gui 1:Add, Tab2, x8 y5 h40 w600 Buttons -Wrap, main|доклады|лекции|
 Gui 1:Font, s11 cWhite Bold, Gilroy
 Gui, Add, Button, x580 y10 w120 h30 gData, settings
 Gui, Add, Button, x435 y10 w140 h30 gUseLink, Полезные ссылки
-Gui, Add, Button, x237 y470 w465 h30 grungame, Запуск игры [ укажите диск, на котором установлена игра ]
+Gui, Add, Button, x237 y470 w465 h30 grungame, Запуск игры [ подключение к #2 серверу ]
 Gui, Add, Button, x237 y505 w465 h30 gkillgame, Остановка игры [ полное её закрытие ]
 Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x10 y40 w225 h75 ; рамка для границ
@@ -5404,10 +5404,10 @@ sleep 2000
 SendPlay, /b Кроме того, у нас есть журнал активности — слежка за онлайном сотрудников. При входе на сервер{enter}
 SendPlay, {T}
 sleep 2000
-SendPlay, /b вам необходимо поставить статус !онлайн, при уходе со смены/во время перерыва — !афк,{enter}
+SendPlay, /b вам необходимо поставить статус {!}онлайн, при уходе со смены/во время перерыва — {!}афк,{enter}
 SendPlay, {T}
 sleep 2000
-SendPlay, /b при выходе с сервера — !вышел (оффлайн). У нас есть специальная беседа,{enter} 
+SendPlay, /b при выходе с сервера — {!}вышел (оффлайн). У нас есть специальная беседа,{enter} 
 SendPlay, {T}
 sleep 2000
 SendPlay, /b там про это подробно расписано.{enter}
