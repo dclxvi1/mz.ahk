@@ -26,7 +26,7 @@ global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.8.7"
+currentVersion := "0.8.8"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -162,8 +162,9 @@ Gui 1:Add, Tab2, x8 y5 h40 w600 Buttons -Wrap, main|доклады|лекции|
 Gui 1:Font, s11 cWhite Bold, Gilroy
 Gui, Add, Button, x580 y10 w120 h30 gData, settings
 Gui, Add, Button, x435 y10 w140 h30 gUseLink, Полезные ссылки
-Gui, Add, Button, x237 y470 w465 h30 grungame, Запуск игры [ подключение к #2 серверу ]
-Gui, Add, Button, x237 y505 w465 h30 gkillgame, Остановка игры [ полное её закрытие ]
+Gui, Add, Button, x237 y470 w465 h24 grungame, Запуск игры [ подключение к #2 серверу ]
+Gui, Add, Button, x237 y498 w465 h24 gkillgame, Остановка игры [ полное её закрытие ]
+Gui, Add, Button, x237 y526 w465 h24 gresgame, Перезаход в игру [ её закрытие и автозапуск ]
 Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x10 y40 w225 h75 ; рамка для границ
 Gui 1:Add, GroupBox, x10 y40 w225 h135 ; рамка для границ
@@ -746,18 +747,18 @@ Gui, Add, Text, x480 y509 w102 h15 c%Colors%, Старший
 Gui, Add, Text, x540 y509 w102 h15 cwhite, состав
 Gui 1:Font, s7 cWhite Bold, Gilroy
 Gui, Add, Text, x20 y525 w102 h15 c%Colors%, Предупреждение
-Gui, Add, Text, x93 y525 w102 h15 cwhite, —  набрать 40 баллов;
+Gui, Add, Text, x97 y525 w102 h15 cwhite, —  набрать 40 баллов;
 Gui, Add, Text, x20 y535 w102 h15 c%Colors%, Выговор
 Gui, Add, Text, x60 y535 w102 h15 cwhite, —  набрать 50 баллов;
 Gui, Add, Text, x20 y545 w142 h15 c%Colors%, Строгий выговор
-Gui, Add, Text, x107 y545 w102 h15 cwhite, —  набрать 75 баллов;
+Gui, Add, Text, x95 y545 w102 h15 cwhite, —  набрать 75 баллов;
 
 Gui, Add, Text, x370 y525 w102 h15 c%Colors%, Предупреждение
-Gui, Add, Text, x443 y525 w102 h15 cwhite, —  набрать 55 баллов;
+Gui, Add, Text, x447 y525 w102 h15 cwhite, —  набрать 55 баллов;
 Gui, Add, Text, x370 y535 w102 h15 c%Colors%, Выговор
 Gui, Add, Text, x410 y535 w102 h15 cwhite, —  набрать 70 баллов;
 Gui, Add, Text, x370 y545 w142 h15 c%Colors%, Строгий выговор
-Gui, Add, Text, x457 y545 w102 h15 cwhite, —  набрать 90 баллов;
+Gui, Add, Text, x445 y545 w102 h15 cwhite, —  набрать 90 баллов;
 
 Gui 1:Font, s7 White Bold, Gilory
 Gui, Add, Text, x620 y585 w999 h30 , by German_McKenzy
@@ -917,9 +918,14 @@ Gui Font, s7 White Bold, Gilory
 Gui, Add, Text, x520 y500 w999 h30 , by German_McKenzy
 Gui, Add, Text, x5 y500 w111 h30, v%currentversion%
 
-    Gui, NewWindow:Show, , mz.ahk by mck
+    Gui, NewWindow:Show, , settings
 return
 ;________________________________________________________________________________________________________________________________________________________________________________________
+resgame:
+WinKill, MTA: San Andreas
+gosub, rungame
+return
+
 rungame:
 RegRead, prov_path, HKEY_LOCAL_MACHINE, Software\WOW6432Node\Multi Theft Auto: Province All\1.6, Last Run Location
 
