@@ -20,13 +20,13 @@ if not A_IsAdmin
     ExitApp 
 }
 
-global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :="", Rang :="" , Disc := "" , Colors := ""
+global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :="", Rang :="" , Colors := ""
 ;________________________________________________________________________________________________________________________________________________________________________________________
 
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.8.8"
+currentVersion := "0.8.9"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -194,6 +194,8 @@ Gui, Add, Text, x2 x20 y225 w150 h15 cWhite, • ctrl + 4
 Gui, Add, Text, x2 x65 y225 w160 h15 c%Colors%, — выдача лекарства
 Gui, Add, Text, x2 x20 y240 w150 h15 cWhite, • ctrl + 5
 Gui, Add, Text, x2 x65 y240 w160 h15 c%Colors%, — самолечение
+Gui, Add, Text, x2 x20 y255 w150 h15 cWhite, • ctrl + 6
+Gui, Add, Text, x2 x65 y255 w160 h15 c%Colors%, — исп. мегафона
 
 Gui 1:Font, s12 cWhite Bold, Gilroy
 Gui 1:Add, GroupBox, x237 y40 w465 h138 c%Colors%, [ вызов ]
@@ -813,7 +815,7 @@ Gui, Add, Text, x440 y550 w555 h15 cwhite,  • Скриншоты в хх:20, �
 
 LoadData()
 {
-    global Tag, Partners, City, Post, Frac, iniFile , FIO , Ran , Disc , Colors
+    global Tag, Partners, City, Post, Frac, iniFile , FIO , Ran , Colors
     if (FileExist(iniFile))
     {
         FileRead, FileContent, %iniFile%
@@ -836,8 +838,6 @@ LoadData()
                 FIO := Value
             else if (Var = "Rang")
                 Rang := Value
-            else if (Var = "Disc")
-                Disc := Value
             else if (Var = "Colors")
                 Colors := Value
         }
@@ -955,7 +955,6 @@ SaveData:
         Frac: %Frac%`n
         FIO: %FIO%`n  
         Rang: %Rang%`n  
-        Disc: %Disc%`n  
         Colors: %Colors%`n  
     ), %iniFile%
     MsgBox, 64, Сохранено, Данные успешно сохранены в файл: %iniFile% .
@@ -1219,6 +1218,23 @@ sleep 111
 sendplay {T}
 sleep 111
 sendplay /me открыв сумку, достал необходимое лекарство и употребил его {enter}
+return
+
+^6::
+SendMessage, 0x50,, 0x4190419,, A
+blockinput on
+sendplay {T}|
+sleep 122
+sendplay /me сняв рацию с приборной панели, нажал на тангенту после чего что-то прокричал в неё {enter}
+sleep 333
+sendplay {T}
+sleep 111
+sendplay /m Пропустите скорую помощь! Спасите жизнь человеку{!} {enter}
+sleep 333
+sendplay {T}
+sleep 111
+sendplay /me отпустил тангенту после чего повесил рацию на приборную панель{enter}
+blockinput off
 return
 
 :*?:рация1::
