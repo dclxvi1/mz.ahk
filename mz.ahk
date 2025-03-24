@@ -26,7 +26,7 @@ global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.8.9"
+currentVersion := "0.9.1"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -1229,7 +1229,7 @@ sendplay /me сняв рацию с приборной панели, нажал 
 sleep 333
 sendplay {T}
 sleep 111
-sendplay /m Пропустите скорую помощь! Спасите жизнь человеку{!} {enter}
+sendplay /m Пропустите скорую помощь{!} Спасите жизнь человеку{!} {enter}
 sleep 333
 sendplay {T}
 sleep 111
@@ -1727,8 +1727,6 @@ sendplay {f8}
 sleep 120
 sendplay ^A{Delete}
 sleep 1111
-sendplay say Вы получаете мед. карту впервые или желаете продлить ее? {enter}
-sleep 111
 sendplay do В медицинской сумке лежит клипборд с закреплённым бланком и ручкой. {enter}
 sleep 120
 sendplay todo Для оформления мне нужен документ, удостоверяющий вашу личность*доставая клипборд из сумки {enter}
