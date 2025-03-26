@@ -26,7 +26,7 @@ global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.9.1"
+currentVersion := "0.9.2"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -1883,7 +1883,7 @@ sleep 111
 sendplay {f8}
 sleep 111
 sendplay ^A{Delete}
-sleep 111
+sleep 1111
 sendplay, do На поясе сотрудника висит рабочая рация. {enter}
 sleep 111
 sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
@@ -1892,20 +1892,25 @@ sendplay выехал | прод | завершил -->{space}
 Input TryRes, V, {enter}
 if(TryRes=="выехал")||(TryRes=="dst[fk")
 {
-sleep 150
+sleep 444
 sendplay вертолет / карета (в | к) -->{space}
 Input TryRes, V, {enter}
 if(TryRes=="в")||(TryRes=="d")
 {
-sleep 150
+sleep 111
+sendplay ^A{Delete}
+sleep 1111
 sendplay r [%Tag%] Вылетел в свободное патрулирование города. Напарник: %Partners%{enter}
 sleep 111
 Gosub, razia
 return
 }
+
 if(TryRes=="к")||(TryRes=="r")
 {
-sleep 150
+sleep 111
+sendplay ^A{Delete}
+sleep 1111
 sendplay r [%Tag%] Выехал в свободное патрулирование города. Напарник: %Partners%{enter}
 sleep 111
 Gosub, razia
@@ -1914,6 +1919,9 @@ return
 }
 if(TryRes=="прод")||(TryRes=="ghjl")
 {
+sleep 111
+sendplay ^A{Delete}
+sleep 1111
 sendplay r [%Tag%] Продолжаю свободное патрулирование города. Напарник: %Partners%{enter}
 sleep 111
 Gosub, razia
@@ -1921,6 +1929,9 @@ return
 }
 if(TryRes=="завершил")||(TryRes=="pfdthibk")
 {
+sleep 111
+sendplay ^A{Delete}
+sleep 1111
 sendplay r [%Tag%] Завершил свободное патрулирование города. Напарник: %Partners%{enter}
 sleep 111
 Gosub, razia
