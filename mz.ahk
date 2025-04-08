@@ -26,7 +26,7 @@ global Tag :=  "", Partners := "" , City := "" , Post := "" , Frac := "" , FIO :
 scriptPath := A_ScriptFullPath
 scriptDir := A_ScriptDir
 scriptName := A_ScriptName
-currentVersion := "0.9.2"
+currentVersion := "0.9.3"
 githubVersionURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/version"
 githubScriptURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/mz.ahk"
 githubChangelogURL := "https://raw.githubusercontent.com/dclxvi1/mz.ahk/refs/heads/main/changelog.txt"
@@ -1642,7 +1642,7 @@ sendplay ^A{Delete}
 sleep 444
 sendplay do На поясе сотрудника висит рабочая рация. {enter}
 sleep 120
-sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё, вызвав дежурного врача {enter}
+sendplay me сняв рацию с пояса, нажал на тангенту и, вызвав дежурного врача, доложил информацию {enter}
 sleep 120
 sendplay r [%Tag%] Пациент госпитализирован. Вызов обработан. Напарник: %Partners% {enter}
 sleep 300
@@ -1660,7 +1660,7 @@ sendplay ^A{Delete}
 sleep 444
 sendplay do На поясе сотрудника висит рабочая рация. {enter}
 sleep 120
-sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё, вызвав дежурного врача {enter}
+sendplay me сняв рацию с пояса, нажал на тангенту и, вызвав дежурного врача, доложил информацию {enter} 
 sleep 120
 sendplay r [%Tag%] Пациент госпитализирован. Вызов обработан. {enter}
 sleep 300
@@ -1685,7 +1685,7 @@ sendplay ^A{Delete}
 sleep 444
 sendplay do На поясе сотрудника висит рабочая рация. {enter}
 sleep 120
-sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё, вызвав дежурного врача {enter}
+sendplay me сняв рацию с пояса, нажал на тангенту и, вызвав дежурного врача, доложил информацию {enter}
 sleep 120
 sendplay r [%Tag%] Пациент госпитализирован. Вызов обработан. Напарник: %Partners% {enter}
 sleep 300
@@ -1703,7 +1703,7 @@ sendplay ^A{Delete}
 sleep 444
 sendplay do На поясе сотрудника висит рабочая рация. {enter}
 sleep 120
-sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё, вызвав дежурного врача {enter}
+sendplay me сняв рацию с пояса, нажал на тангенту и, вызвав дежурного врача, доложил информацию {enter}
 sleep 120
 sendplay r [%Tag%] Пациент госпитализирован. Вызов обработан. {enter}
 sleep 300
@@ -2061,31 +2061,40 @@ sleep 111
 sendplay {f8}
 sleep 111
 sendplay ^A{Delete}
-sleep 111
+sleep 1111
 sendplay, do На поясе сотрудника висит рабочая рация. {enter}
-sleep 111
+sleep 444
 sendplay me сняв рацию с пояса, нажал на тангенту и что-то сказал в неё {enter}
 sleep 111
 sendplay вылетел | прод | завершил -->{space}
 Input TryRes, V, {enter}
 if(TryRes=="вылетел")||(TryRes=="dsktntk")
 {
-sendplay ro [%City%] Вылетел в воздушное патрулирование Республики.{enter}
 sleep 111
+sendplay ^A{Delete}
+sleep 1111
+sendplay ro [%City%] Вылетел в воздушное патрулирование Республики.{enter}
+sleep 444
 Gosub, razia
 return
 }
 if(TryRes=="прод")||(TryRes=="ghjl")
 {
-sendplay ro [%City%] Продолжаю воздушное патрулирование Республики.{enter}
 sleep 111
+sendplay ^A{Delete}
+sleep 1111
+sendplay ro [%City%] Продолжаю воздушное патрулирование Республики.{enter}
+sleep 444
 Gosub, razia
 return
 }
 if(TryRes=="завершил")||(TryRes=="pfdthibk")
 {
-sendplay ro [%City%] Завершил воздушное патрулирование Республики.{enter}
 sleep 111
+sendplay ^A{Delete}
+sleep 1111
+sendplay ro [%City%] Завершил воздушное патрулирование Республики.{enter}
+sleep 444
 Gosub, razia
 return
 }
